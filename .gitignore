@@ -18,6 +18,10 @@ var/
 wheels/
 *.egg-info/
 .installed.cfg
+
+# Temporary language directories
+en/
+es/
 *.egg
 MANIFEST
 
@@ -56,6 +60,15 @@ docs/*.toc
 docs/*.lof
 docs/*.lot
 
+# Software build artifacts
+software/build/*.log
+software/build/*.aux
+software/build/*.out
+software/build/output/
+software/examples/*/main/*.o
+software/examples/*/main/*.exe
+software/examples/*/main/icp10111_example
+en/
 # IDE
 .vscode/
 .idea/

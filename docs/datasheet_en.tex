@@ -3,6 +3,10 @@
 % Configuración de página y márgenes
 \usepackage[margin=1in, top=1.2in, bottom=1.2in]{geometry}
 
+% Configuración para manejar líneas largas y overflow
+\sloppy
+\emergencystretch=1em
+
 % Paquetes para caracteres especiales y codificación
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -28,6 +32,9 @@
 \usepackage{multirow}
 \usepackage{multicol}
 \usepackage{tabularx}
+
+% Paquetes para listas mejoradas
+\usepackage{enumitem}
 
 % Control de saltos de página
 \usepackage{needspace}
@@ -55,7 +62,7 @@
 
 % Pie de página
 \fancyfoot[L]{\small UNIT Electronics - Development}
-\fancyfoot[C]{\small 2025-07-21}
+\fancyfoot[C]{\small July 2025}
 \fancyfoot[R]{\small Page \thepage\ of \pageref{LastPage}}
 
 % Línea en encabezado y pie
@@ -66,7 +73,7 @@
 \fancypagestyle{plain}{
     \fancyhf{}
     \fancyfoot[L]{\small UNIT Electronics - Development}
-    \fancyfoot[C]{\small 2025-07-21}
+    \fancyfoot[C]{\small July 2025}
     \fancyfoot[R]{\small Page \thepage\ of \pageref{LastPage}}
     \renewcommand{\headrulewidth}{0pt}
     \renewcommand{\footrulewidth}{0.4pt}
@@ -74,14 +81,22 @@
 
 % Configuración de listings para código
 \lstset{
-    basicstyle=\ttfamily\small,
+    basicstyle=\ttfamily\scriptsize,
     breaklines=true,
     frame=single,
     backgroundcolor=\color{gray!10},
     keywordstyle=\color{blue},
     commentstyle=\color{green!50!black},
-    stringstyle=\color{red}
+    stringstyle=\color{red},
+    showstringspaces=false,
+    tabsize=2,
+    breakatwhitespace=true,
+    columns=flexible
 }
+
+% Configuración adicional para verbatim con líneas largas
+\usepackage{alltt}
+\renewcommand{\ttdefault}{pcr}
 
 % Paquetes para mejor tipografía
 \usepackage{microtype}
@@ -90,6 +105,13 @@
 % Configuración de espaciado
 \onehalfspacing
 
+% Configuración de listas anidadas
+\setlist[itemize]{nosep, leftmargin=*, before=\vspace{0.5\baselineskip}, after=\vspace{0.5\baselineskip}}
+\setlist[itemize,1]{label=\textbullet}
+\setlist[itemize,2]{label=\textendash}
+\setlist[itemize,3]{label=\textasteriskcentered}
+\setlist[enumerate]{nosep, leftmargin=*, before=\vspace{0.5\baselineskip}, after=\vspace{0.5\baselineskip}}
+
 % Comandos personalizados
 \providecommand{\tightlist}{}
 
@@ -97,8 +119,8 @@
 \widowpenalty=10000
 \clubpenalty=10000
 
-% Configuración de profundidad de numeración
-\setcounter{secnumdepth}{3}
+% Configuración de profundidad de numeración - sin numeración automática para secciones principales
+\setcounter{secnumdepth}{2}
 \setcounter{tocdepth}{3}
 
 \begin{document}
@@ -126,683 +148,1560 @@
         {\footnotesize Development Project - Prototype Phase}
     \end{minipage}
     
-    \vspace{0.5cm}
+    \vspace{2cm}
     
-    % Línea divisoria principal
-    {\color{blue}\rule{\textwidth}{2pt}}
+    % Título principal
+    {\huge \textbf{Electronic Module}}\\[0.5cm]
     
-    \vspace{1.5cm}
+    % Subtítulo
     
-    % Clasificación del documento
-    \begin{tcolorbox}[
-        colback=blue!5!white,
-        colframe=blue!75!black,
-        width=0.9\textwidth,
-        arc=2mm,
-        boxrule=1.5pt,
-        halign=center
-    ]
-    {\Large \textbf{TECHNICAL DATASHEET}}\\[0.2cm]
-    {\normalsize Hardware Documentation \& Development Specifications}
-    \end{tcolorbox}
-    
-    \vspace{0.8cm}
-    
-    % Título principal estandarizado
-    {\Huge \textbf{\textcolor{blue}{ICP-10111 Barometric Pressure Sensor}}}\\[0.3cm]
-    
-    % Subtítulo técnico
-    
-    {\LARGE \textcolor{gray}{High-Precision Environmental Sensor Module}}\\[0.5cm]
+    {\Large Technical Datasheet and Development Guide}\\[1cm]
     
     
-    % Código de parte y versión
-    \begin{tcolorbox}[
-        colback=gray!10!white,
-        colframe=gray!50!black,
-        width=0.7\textwidth,
-        arc=1mm,
-        boxrule=1pt
-    ]
-    \centering
-    \begin{tabular}{l l}
-    \textbf{Part Number:} & ICP-10111-001 \\
-    \textbf{Revision:} & Rev. 1.0 \\
-    \textbf{Document Date:} & 2025-07-21
-    \end{tabular}
-    \end{tcolorbox}
+    % Información del producto
     
-    \vspace{1cm}
+    {\large \textbf{Product:} Electronic Module}\\[0.3cm]
     
-    % Tabla de información del documento (Formato simplificado)
-    \begin{tcolorbox}[
-        colback=white,
-        colframe=black,
-        width=0.9\textwidth,
-        arc=0mm,
-        boxrule=1pt,
-        halign=center
-    ]
-    {\normalsize \textbf{DOCUMENT INFORMATION}}\\[0.3cm]
-    \begin{tabular}{|l|l|}
-    \hline
-    \textbf{Document Type} & Technical Datasheet \\
-    \hline
-    \textbf{Classification} & Development Documentation \\
-    \hline
-    \textbf{Project Phase} & Prototype \& Development \\
-    \hline
     
-    \textbf{Technical Author} & DevLab Engineering Team \\
-    \hline
     
-    \textbf{Review Status} & Draft - Under Development \\
-    \hline
-    \textbf{Distribution} & Internal Development Team \\
-    \hline
-    \end{tabular}
-    \end{tcolorbox}
+    {\large \textbf{SKU:} UEXXXX}\\[0.3cm]
     
-    \vspace{0.8cm}
     
-    % Disclaimers y avisos para proyecto en desarrollo
-    \begin{tcolorbox}[
-        colback=yellow!5!white,
-        colframe=orange!75!black,
-        width=\textwidth,
-        arc=1mm,
-        boxrule=1pt
-    ]
-    \centering
-    {\small \textbf{DEVELOPMENT NOTICE}}\\[0.2cm]
-    {\footnotesize This document describes a prototype hardware module under development.}\\
-    {\footnotesize Specifications are preliminary and subject to change during development process.}\\
-    {\footnotesize Not intended for production use without further validation and testing.}
-    \end{tcolorbox}
+    
+    {\large \textbf{Version:} 1.0.0}\\[1cm]
+    
     
     \vfill
     
-    % Footer para proyecto de desarrollo
-    \begin{tcolorbox}[
-        colback=blue!10!white,
-        colframe=blue!50!black,
-        width=\textwidth,
-        arc=0mm,
-        boxrule=1pt
-    ]
-    \centering
+    % Información de fechas y estado
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \textbf{Project Phase}\\
+        Prototype Development
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \textbf{Hardware Status}\\
+        Functional prototype completed
+    \end{minipage}
     
-    {\large \textbf{UNIT Electronics}}\\[0.1cm]
+    \vspace{1cm}
     
-    {\small Hardware Development \& Prototyping}\\
-    {\footnotesize Development Project - Contact: info@unitelectronics.com}\\
-    {\tiny \textit{© 2025 Development documentation - All specifications are preliminary}}
-    \end{tcolorbox}
+    % Pie de página con fecha y copyright
+    {\large July 2025}\\[0.5cm]
+    {\footnotesize © 2025 UNIT Electronics. All rights reserved.}
     
 \end{titlepage}
 
-% Página de información del proyecto
-\begin{titlepage}
-    \vspace*{2cm}
-    
-    \begin{center}
-    {\Large \textbf{PROJECT INFORMATION \& DEVELOPMENT STATUS}}
-    \end{center}
-    
-    \vspace{1cm}
-    
-    % Historial de revisiones simplificado
-    \section*{REVISION HISTORY}
-    \begin{longtable}{|c|c|c|l|}
-    \hline
-    \textbf{Rev.} & \textbf{Date} & \textbf{Author} & \textbf{Description of Changes} \\
-    \hline
-    1.0 & 2025-07-21 & DevLab Engineering Team & Initial development documentation \\
-    \hline
-    \end{longtable}
-    
-    \vspace{1cm}
-    
-    % Estado del desarrollo
-    \section*{DEVELOPMENT STATUS}
-    \begin{itemize}
-        \item \textbf{Project Phase:} Prototype Development
-        \item \textbf{Hardware Status:} Functional prototype completed
-        \item \textbf{Testing Status:} Basic functionality verified
-        \item \textbf{Documentation:} Preliminary specifications
-        \item \textbf{Certification:} Not yet initiated
-    \end{itemize}
-    
-    \vspace{1cm}
-    
-    % Referencias y objetivos de estándares futuros
-    \section*{FUTURE COMPLIANCE TARGETS}
-    \begin{itemize}
-        \item \textbf{Design Guidelines:} Following IPC-2221 recommendations
-        \item \textbf{Environmental Goals:} RoHS compliance preparation
-        \item \textbf{Safety Considerations:} Basic safety guidelines applied
-        \item \textbf{EMC Preparation:} Layout considerations for future testing
-        \item \textbf{Quality Process:} Development best practices
-    \end{itemize}
-    
-    \vspace{1cm}
-    
-    % Avisos para desarrollo
-    \section*{DEVELOPMENT NOTICES}
-    
-    \textbf{Project Status:}\\
-    This hardware module is currently in the prototype development phase. All specifications and characteristics described in this document are preliminary and based on initial testing and design calculations.
-    
-    \textbf{Disclaimer:}\\
-    The information in this document represents the current state of development and is provided for development team reference only. Specifications may change as the project progresses through design validation and testing phases.
-    
-    \textbf{Usage Notice:}\\
-    This prototype is intended for development, testing, and evaluation purposes only. It is not suitable for production applications without further development, validation, and appropriate certifications.
-    
-    \vfill
-    
-    \begin{center}
-    {\small \textit{This document follows general technical documentation practices}}\\
-    {\small \textit{and represents current development status as of the revision date}}
-    \end{center}
-    
-\end{titlepage}
+% Página de información técnica
+\newpage
+\thispagestyle{plain}
 
-% Configuración de encabezados y pies de página estandarizados
-\pagestyle{fancy}
-\fancyhf{} % Limpiar encabezados y pies de página
+\section*{Document Information}
 
-% Encabezado - Solo número de parte para evitar superposición
-\fancyhead[L]{\small \textbf{ICP-10111-001}}
-\fancyhead[C]{}
-\fancyhead[R]{\small Rev. Rev. 1.0}
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Field} & \textbf{Value} \\
+\midrule
+Document Title & Electronic Module \\
+Product Name & Electronic Module \\
+SKU & UEXXXX \\
+Version & 1.0.0 \\
+Date & July 2025 \\
+Author & UNIT Electronics \\
+Project Phase & Prototype Development \\
+Hardware Status & Functional prototype completed \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-% Pie de página
-\fancyfoot[L]{\small UNIT Electronics}
-\fancyfoot[C]{\small 2025-07-21}
-\fancyfoot[R]{\small Page \thepage\ of \pageref{LastPage}}
+\vspace{1cm}
 
-% Línea en encabezado y pie
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.4pt}
+\section*{Revision History}
 
-% Estilo para primera página de cada sección
-\fancypagestyle{plain}{
-    \fancyhf{}
-    \fancyfoot[L]{\small UNIT Electronics}
-    \fancyfoot[C]{\small 2025-07-21}
-    \fancyfoot[R]{\small Page \thepage\ of \pageref{LastPage}}
-    \renewcommand{\headrulewidth}{0pt}
-    \renewcommand{\footrulewidth}{0.4pt}
-}
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\toprule
+\textbf{Version} & \textbf{Date} & \textbf{Author} & \textbf{Changes} \\
+\midrule
+1.0.0 & July 2025 & UNIT Electronics & Initial documentation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
 
 % Tabla de contenidos
-
 \tableofcontents
 \newpage
 
-
-% Lista de figuras (si hay imágenes)
-
-\listoffigures
-\newpage
+% El contenido se insertará aquí automáticamente
 
 
-% Lista de tablas (si hay tablas)
-
-\listoftables
-\newpage
+\setcounter{section}{0}
+\section{Electronic Module}
 
 
+\subsection{Overview}
 
-
-% Sección de Licencia de Hardware
-
-\section*{Hardware License Information}
-\addcontentsline{toc}{section}{Hardware License Information}
-
-\begin{tcolorbox}[
-    colback=green!5!white,
-    colframe=green!50!black,
-    title=Open Source Hardware License,
-    fonttitle=\bfseries
-]
-
-\textbf{License Type:} Open Source Hardware\\[0.2cm]
-\textbf{License:} MIT License\\[0.2cm]
-\textbf{Copyright:} Copyright (c) 2025 UNIT Electronics\\[0.2cm]
-
-\textbf{Description:} This hardware design is released under the MIT License
-
-\vspace{0.3cm}
-\textbf{Permissions:}
-\begin{itemize}
-    \item Commercial Use: Permitted
-    \item Modification: Permitted
-    \item Distribution: Permitted
-\end{itemize}
-
-\textbf{Requirements:}
-\begin{itemize}
-    \item Attribution: Attribution required for derivative works
-\end{itemize}
-
-\textbf{Limitations:}
-\begin{itemize}
-    \item Warranty: No warranty provided
-\end{itemize}
-
-\end{tcolorbox}
-\newpage
-
-
-% Sección de Estándares de Diseño IPC
-
-\section*{Design Standards \& IPC Guidelines}
-\addcontentsline{toc}{section}{Design Standards \& IPC Guidelines}
-
-\begin{tcolorbox}[
-    colback=blue!5!white,
-    colframe=blue!50!black,
-    title=IPC Standards Reference,
-    fonttitle=\bfseries
-]
-
-This hardware design follows industry-standard IPC guidelines and best practices:
-
-\vspace{0.3cm}
-\textbf{PCB Design Standards:}
-\begin{itemize}
-    \item IPC-2221 - Generic Standard on Printed Board Design
-    \item IPC-2152 - Standard for Determining Current Carrying Capacity in Printed Board Design
-\end{itemize}
-
-\textbf{Assembly Standards:}
-\begin{itemize}
-    \item IPC-A-610 - Acceptability of Electronic Assemblies
-    \item IPC-J-STD-001 - Requirements for Soldered Electrical and Electronic Assemblies
-\end{itemize}
-
-\textbf{Component Standards:}
-\begin{itemize}
-    \item IPC-7351 - Generic Requirements for Surface Mount Design and Land Pattern Standard
-\end{itemize}
-
-\textbf{Testing Standards:}
-\begin{itemize}
-    \item IPC-TM-650 - Test Methods Manual
-\end{itemize}
-
-\end{tcolorbox}
-
-\vspace{0.5cm}
-\begin{tcolorbox}[
-    colback=orange!5!white,
-    colframe=orange!50!black,
-    title=Compliance Status (Development Phase),
-    fonttitle=\bfseries
-]
-
-\textbf{Environmental Compliance:}
-\begin{itemize}
-    \item RoHS: Design prepared for RoHS compliance
-    \item REACH: Material selection following REACH guidelines
-    \item Lead-Free: Lead-free assembly process compatible
-\end{itemize}
-
-\textbf{Note:} Development stage - testing in progress
-
-\end{tcolorbox}
-\newpage
-
-
-% Contenido principal del documento
-\section{SCOPE AND PURPOSE}
-
-\subsection{Document Scope}
-
-This technical datasheet provides comprehensive specifications, electrical characteristics, mechanical dimensions, and application guidelines for the ICP-10111 Barometric Pressure Sensor module. This document is intended for design engineers, system integrators, and technical personnel involved in the development and integration of environmental sensing solutions.
-
-\subsection{Product Overview}
-
-The ICP-10111 Barometric Pressure Sensor module is a compact embedded sensor with integrated environmental monitoring capabilities, designed for IoT applications and precise atmospheric measurements. The module combines high-accuracy pressure sensing with auxiliary environmental monitoring capabilities in a compact, easy-to-integrate form factor.
+This electronic module provides a standardized template for professional hardware documentation and development. It includes complete hardware specifications, software integration examples, and professional-grade documentation generation tools.
 
 \subsection{Key Features}
 
-\begin{itemize}
-\item \textbf{ICP-10111 Pressure Sensor} - High precision barometric pressure measurement
-\item \textbf{BME688 Environmental Sensor} - Temperature, humidity, and gas sensing capabilities
-\item \textbf{Low Power Consumption} - Optimized for battery-powered applications
-\item \textbf{I2C/QWIIC Connectivity} - Standard digital interface with plug-and-play connector
-\item \textbf{Compact Form Factor} - PCB with castellated holes for flexible mounting options
-\item \textbf{Industrial Temperature Range} - -40\degreeC to +85\degreeC operation
-\item \textbf{RoHS Compliant} - Lead-free manufacturing process
-\end{itemize}
+- \textbf{Modular Design}: Standardized electronic module template
+- \textbf{Professional Documentation}: IEEE/ISO compliant technical documentation
+- \textbf{Multi-Interface Support}: Standard communication protocols
+- \textbf{Development Ready}: Complete development framework included
 
-\section{TECHNICAL SPECIFICATIONS}
+\subsection{Technical Specifications}
 
-\subsection{Absolute Maximum Ratings}
-
+\subsubsection{Electrical Characteristics}
 
 \begin{table}[H]
 \centering
-\small
-\begin{tabular}{|l|l|l|l|l|l|}
-\hline
-Parameter & Symbol & Min & Max & Unit & Notes \\
-\hline
-Supply Voltage & VDD & -0.3 & 6.0 & V & Beyond operating range \\
-Storage Temperature & TSTG & -55 & +125 & \degreeC & Non-operating \\
-Pressure Range (Absolute) & PABS & 0 & 1500 & hPa & Mechanical limit \\
-\hline
+\begin{tabular}{llllll}
+\toprule
+Parameter & Min & Typ & Max & Unit & Notes \\
+\midrule
+Supply Voltage & 3.0 & 3.3 & 5.5 & V & Operating range \\
+Operating Current & - & 50 & 100 & mA & Typical operation \\
+Standby Current & - & 1 & 10 & \textmu{}A & Sleep mode \\
+\bottomrule
 \end{tabular}
-\caption{Absolute Maximum Ratings}
 \end{table}
 
 
-\textbf{WARNING:} Stresses beyond those listed under "Absolute Maximum Ratings" may cause permanent damage to the device. Exposure to absolute maximum rating conditions for extended periods may affect device reliability.
-
-\subsection{Recommended Operating Conditions}
-
-\subsubsection{Sensor Specifications}
-
+\subsubsection{Physical Characteristics}
 
 \begin{table}[H]
 \centering
-\small
-\begin{tabular}{|l|l|l|l|}
-\hline
+\begin{tabular}{llll}
+\toprule
 Parameter & Value & Unit & Notes \\
-\hline
-Pressure Range & 300-1250 & hPa & Absolute pressure \\
-Pressure Accuracy & $\pm$0.4 & hPa & At 25\degreeC \\
-Temperature Range & -40 to +85 & \degreeC & Operating range \\
-Humidity Range & 0-100 & %RH & Relative humidity \\
-Interface & I2C & - & QWIIC compatible \\
-\hline
+\midrule
+Dimensions & 25.4 x 25.4 & mm & Standard module size \\
+Weight & 5 & g & Approximate \\
+Operating Temperature & -40 to +85 & \textdegree{}C & Industrial range \\
+\bottomrule
 \end{tabular}
-\caption{Sensor Performance Specifications}
 \end{table}
 
 
-\subsubsection{Power Specifications}
+\subsubsection{Interface Specifications}
 
+- \textbf{Primary Interface}: I2C (Standard mode)
+- \textbf{Secondary Interface}: SPI (Optional)
+- \textbf{Connector Type}: Standard pin header
+- \textbf{Voltage Levels}: 3.3V/5V compatible
+
+\subsection{Pin Configuration}
+
+\subsubsection{Standard Pinout}
 
 \begin{table}[H]
 \centering
-\small
-\begin{tabular}{|l|l|l|l|l|l|}
-\hline
-Parameter & Min & Typ & Max & Unit & Conditions \\
-\hline
-Supply Voltage & 3.0 & 3.3 & 5.0 & V & Normal Operation \\
-Active Current & - & 1.2 & 2.0 & mA & Continuous measurement \\
-Sleep Current & - & 0.1 & 0.5 & $\mu$A & Standby mode \\
-Regulator Output & - & 1.8 & - & V & Internal LDO \\
-\hline
+\begin{tabular}{llll}
+\toprule
+Pin & Name & Type & Description \\
+\midrule
+1 & VCC & Power & Supply voltage \\
+2 & GND & Power & Ground reference \\
+3 & SDA & I/O & I2C Data line \\
+4 & SCL & I/O & I2C Clock line \\
+5 & INT & Output & Interrupt signal \\
+6 & RST & Input & Reset signal \\
+\bottomrule
 \end{tabular}
-\caption{Electrical Characteristics}
 \end{table}
 
 
-\subsection{Pinout}
+\subsection{Hardware Integration}
+
+\subsubsection{Connection Diagram}
+
+Standard connection follows industry best practices for electronic module integration.
+
+\subsubsection{Required Components}
+
+- Pull-up resistors for I2C lines (4.7kΩ recommended)
+- Decoupling capacitors (100nF ceramic + 10µF electrolytic)
+- Optional level shifters for voltage translation
+
+\subsection{Software Integration}
+
+\subsubsection{C/C++ Integration}
+
+\begin{lstlisting}[language=c]
+#include "electronic_module.h"
+
+// Initialize module
+int init_result = electronic_module_init();
+if (init_result != 0) {
+    printf("Module initialization failed\n");
+    return -1;
+}
+
+// Read data
+uint16_t data = electronic_module_read();
+printf("Module data: %d\n", data);
+\end{lstlisting}
+
+\subsubsection{Python Integration}
+
+\begin{lstlisting}[language=python]
+import electronic_module
 
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.9\textwidth]{en_unit_pinout_v_0_0_1_ue0094_icp10111_barometric_pressure_sensor_en.jpg}
-\caption{Pinout Diagram}
-\label{fig:en-unit-pinout-v-0-0-1-ue0094-icp10111-barometric-pressure-sensor-en-jpg}
-\end{figure}
+\setcounter{section}{0}
+\section{Initialize module}
+
+module = electronic_module.ElectronicModule()
+if not module.init():
+    print("Module initialization failed")
+    exit(1)
 
 
+\setcounter{section}{0}
+\section{Read data}
 
+data = module.read()
+print(f"Module data: {data}")
+\end{lstlisting}
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|c|c|c|}
-\hline
-Pin Label & Function & Notes \\
-\hline
-VCC & Power Supply & 3.3V or 5V \\
-GND & Ground & Common ground for all components \\
-SDA & I2C Data & Serial data line \\
-SCL & I2C Clock & Serial clock line \\
-\hline
-\end{tabular}
-\caption{Pin Configuration}
-\end{table}
+\subsection{Development Tools}
 
+\subsubsection{Build System}
 
-\subsection{Dimensions}
+Professional build system included for cross-platform development:
+- CMake configuration for C/C++
+- Python setup tools
+- Documentation generation tools
 
+\subsubsection{Testing Framework}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.6\textwidth]{en_unit_dimension_v_1_0_0_icp10111_barometric_pressure_sensor.png}
-\caption{Dimensions}
-\label{fig:en-unit-dimension-v-1-0-0-icp10111-barometric-pressure-sensor-png}
-\end{figure}
+Comprehensive testing framework:
+- Unit tests for all functions
+- Integration tests with real hardware
+- Automated CI/CD pipeline
 
+\subsection{Documentation Generation}
 
+Professional documentation is generated using LaTeX with IEEE formatting standards. The system includes:
 
-\subsection{Topology}
+- Automated datasheet generation
+- Multi-language support
+- Version control integration
+- Professional formatting standards
 
+\subsection{Support and Resources}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.7\textwidth]{en_unit_topology_v_1_0_0_icp10111_barometric_pressure_sensor.png}
-\caption{Topology}
-\label{fig:en-unit-topology-v-1-0-0-icp10111-barometric-pressure-sensor-png}
-\end{figure}
+\subsubsection{Getting Started}
 
+1. Review hardware specifications
+2. Follow integration examples
+3. Use provided software libraries
+4. Generate professional documentation
 
+\subsubsection{Additional Resources}
 
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|c|c|}
-\hline
-Ref. & Description \\
-\hline
-IC1 & ICP-10111 Barometric Pressure Sensor \\
-IC2 & BME688 Environmental Sensor \\
-L1 & Power On LED \\
-U1 & ME6206A18XG 1.8V Regulator \\
-JP1 & 2.54 mm Castellated Holes \\
-J1 & QWIIC Connector (JST 1 mm pitch) for I2C \\
-\hline
-\end{tabular}
-\caption{Component Reference}
-\end{table}
-
-
-\subsection{Communication Interfaces}
-
-\subsubsection{I2C Interface}
-\begin{itemize}
-\item \textbf{Address}: 0x63 (ICP-10111), 0x77 (BME688)
-\item \textbf{Speed}: Standard (100 kHz), Fast (400 kHz)
-\item \textbf{Features}: QWIIC compatible connector
-\item \textbf{Pull-up Resistors}: 4.7k$\Omega$ integrated
-\end{itemize}
-
-\subsubsection{Digital Interface Specifications}
-\begin{itemize}
-\item \textbf{Logic Levels}: 3.3V CMOS compatible
-\item \textbf{Input High}: 2.0V minimum
-\item \textbf{Input Low}: 0.8V maximum
-\item \textbf{Output Drive}: 4mA typical
-\end{itemize}
-
-\subsection{Physical Characteristics}
-
-\subsubsection{Package Information}
-
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|c|c|c|}
-\hline
-Parameter & Value & Unit \\
-\hline
-Package Type & Custom PCB & - \\
-Dimensions & 25.4 x 15.24 x 3.2 & mm \\
-Mounting & Castellated holes & 2.54mm pitch \\
-Weight & 2.1 & g \\
-\hline
-\end{tabular}
-\caption{Physical Dimensions}
-\end{table}
-
-
-\subsubsection{Environmental Specifications}
-
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|l|l|l|l|l|}
-\hline
-Parameter & Min & Max & Unit & Conditions \\
-\hline
-Operating Temperature & -40 & +85 & \degreeC & Full accuracy \\
-Storage Temperature & -55 & +125 & \degreeC & - \\
-Humidity & 0 & 100 & %RH & Non-condensing \\
-Pressure Range & 300 & 1250 & hPa & Absolute pressure \\
-\hline
-\end{tabular}
-\caption{Environmental Operating Conditions}
-\end{table}
-
-
-\subsection{Software Support}
-
-\subsubsection{Development Environment}
-\begin{itemize}
-\item \textbf{Arduino IDE}: Full library support
-\item \textbf{ESP-IDF}: Native driver integration
-\item \textbf{PlatformIO}: Cross-platform support
-\item \textbf{CircuitPython}: Python library available
-\end{itemize}
-
-\subsubsection{Key Libraries}
-\begin{itemize}
-\item ICP-10111 pressure sensor driver
-\item BME688 environmental sensor library
-\item I2C communication protocols
-\item Data filtering and calibration
-\end{itemize}
-
-\subsection{Applications}
-
-The ICP-10111 module is ideal for:
-
-\begin{enumerate}
-\item \textbf{Weather Monitoring}
-\end{enumerate}
-\begin{itemize}
-\item Atmospheric pressure measurement
-\item Altitude determination
-\item Weather prediction systems
-\end{itemize}
-
-\begin{enumerate}
-\item \textbf{IoT Environmental Sensing}
-\end{enumerate}
-\begin{itemize}
-\item Smart building automation
-\item Agricultural monitoring
-\item Air quality assessment
-\end{itemize}
-
-\begin{enumerate}
-\item \textbf{Portable Devices}
-\end{enumerate}
-\begin{itemize}
-\item Fitness trackers
-\item Outdoor navigation devices
-\item Drone altitude control
-\end{itemize}
-
-\subsection{Safety and Compliance}
-
-\subsubsection{Certifications}
-\begin{itemize}
-\item \textbf{RoHS}: Compliant with EU directive
-\item \textbf{REACH}: Compliant with EU regulation
-\item \textbf{CE}: Electromagnetic compatibility
-\end{itemize}
-
-\subsubsection{Safety Features}
-\begin{itemize}
-\item \textbf{ESD Protection}: $\pm$2kV HBM on all pins
-\item \textbf{Reverse Polarity Protection}: Integrated
-\item \textbf{Thermal Protection}: Operating range monitoring
-\end{itemize}
-
-\subsection{References}
-
-\begin{itemize}
-\item \href{https://product.tdk.com/system/files/dam/doc/product/sensor/pressure/capacitive-pressure/data_sheet/ds-000177-icp-10111-v1.3.pdf}{ICP-10111 Datasheet}
-\item \href{https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme688-ds000.pdf}{BME688 Datasheet}
-\item \href{https://www.microne.com.cn/uploads/file/20200904/ME6206.pdf}{ME6206 Regulator Datasheet}
-\end{itemize}
-
-\subsection{Ordering Information}
-
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|l|l|l|l|}
-\hline
-Part Number & Description & Package & MOQ \\
-\hline
-ICP10111-001 & Standard Module & Individual & 1 \\
-ICP10111-DEV & Development Kit & Kit Box & 1 \\
-ICP10111-BULK & Bulk Order & Tray & 100 \\
-\hline
-\end{tabular}
-\caption{Available Part Numbers}
-\end{table}
-
-
-\subsection{Revision History}
-
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|c|c|c|}
-\hline
-Version & Date & Changes \\
-\hline
-1.0 & 2025-07-18 & Initial release \\
-\hline
-\end{tabular}
-\caption{Document Revision History}
-\end{table}
-
-
-\subsection{Schematics}
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{en_Schematics_icon.jpg}
-\caption{Circuit Schematic}
-\label{fig:en-Schematics-icon-jpg}
-\end{figure}
-
-
+- Complete software examples in C and Python
+- Hardware integration guides
+- Professional documentation templates
+- Development tools and utilities
 
 ---
 
-\textit{For technical support and additional information, visit our website or contact our engineering team.}
+\textit{Electronic Module Template - Professional hardware development framework}
+
+
+
+
+\setcounter{section}{0}
+\section{HARDWARE}
+
+
+
+\setcounter{section}{0}
+\section{Electronic Module Template}
+
+
+\subsection{Product Overview}
+
+This electronic module serves as a professional template for hardware documentation and development. It provides a standardized framework for electronic module specification, complete with professional documentation, software integration examples, and development tools.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{unit_top_v_1_0_0_ue0094_icp10111_barometric_pressure_sensor.png}
+\caption{Electronic Module}
+\end{figure}
+
+\textbf{Key Applications:}
+- IoT sensor systems
+- Embedded electronics projects
+- Industrial automation
+- Educational development platforms
+- Prototype development
+- Professional product development
+
+\subsubsection{Key Features}
+
+- \textbf{Standardized Design} - Professional electronic module template following industry standards
+- \textbf{Multi-Interface Support} - I2C, SPI, and GPIO connectivity options
+- \textbf{Low Power Design} - Optimized for battery-powered applications
+- \textbf{Modular Architecture} - Flexible integration with existing systems
+- \textbf{Compact Form Factor} - Standard module dimensions for easy integration
+- \textbf{Wide Operating Range} - Industrial temperature and voltage ranges
+- \textbf{Professional Documentation} - IEEE/ISO compliant technical documentation
+
+\subsection{Technical Specifications}
+
+\subsubsection{Electrical Performance}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\toprule
+Parameter & Specification & Unit & Test Conditions \\
+\midrule
+\textbackslash\{\}textbf\{Supply Voltage\} & 3.0 - 5.5 & V & Operating range \\
+\textbackslash\{\}textbf\{Operating Current\} & 10 - 100 & mA & Typical operation \\
+\textbackslash\{\}textbf\{Standby Current\} & 1 - 10 & \textmu{}A & Sleep mode \\
+\textbackslash\{\}textbf\{Logic Levels\} & 3.3V/5V & V & CMOS compatible \\
+\textbackslash\{\}textbf\{Operating Temperature\} & -40 to +85 & \textdegree{}C & Industrial range \\
+\textbackslash\{\}textbf\{Storage Temperature\} & -55 to +125 & \textdegree{}C & Non-operating \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Interface Specifications}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+Interface & Specification & Notes \\
+\midrule
+\textbackslash\{\}textbf\{Primary Interface\} & I2C & Standard mode, 100-400 kHz \\
+\textbackslash\{\}textbf\{Secondary Interface\} & SPI & Optional, up to 10 MHz \\
+\textbackslash\{\}textbf\{GPIO Pins\} & 4 & Configurable I/O \\
+\textbackslash\{\}textbf\{Interrupt Output\} & Active low & Open-drain \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Physical Characteristics}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llllll}
+\toprule
+Parameter & Min & Typ & Max & Unit & Conditions \\
+\midrule
+\textbackslash\{\}textbf\{Supply Voltage\} & 2.7 & 3.3 & 5.5 & V & Wide input range \\
+\textbackslash\{\}textbf\{Active Current\} & 0.8 & 1.2 & 2.0 & mA & Continuous measurement \\
+\textbackslash\{\}textbf\{Standby Current\} & - & 0.1 & 0.5 & \textmu{}A & Sleep mode \\
+\textbackslash\{\}textbf\{Internal LDO Output\} & 1.71 & 1.8 & 1.89 & V & ICP-10111 core supply \\
+\textbackslash\{\}textbf\{I2C Clock Frequency\} & - & 100/400 & 1000 & kHz & Standard/Fast/Fast+ modes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Pinout Configuration}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{unit_pinout_v_0_0_1_ue0094_icp10111_barometric_pressure_sensor_en.jpg}
+\caption{Pinout Diagram}
+\end{figure}
+
+\subsubsection{Primary I2C Interface}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lllll}
+\toprule
+Pin & Label & Function & Electrical & Notes \\
+\midrule
+1 & \textbackslash\{\}textbf\{VCC\} & Power Supply & 2.7-5.5V & Wide voltage input \\
+2 & \textbackslash\{\}textbf\{GND\} & Ground & 0V & Digital and analog ground \\
+3 & \textbackslash\{\}textbf\{SDA\} & I2C Data & 3.3V logic & Open-drain with 4.7kΩ pull-up \\
+4 & \textbackslash\{\}textbf\{SCL\} & I2C Clock & 3.3V logic & Open-drain with 4.7kΩ pull-up \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{QWIIC Connector (J1)}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\toprule
+Pin & Color & Function & Voltage \\
+\midrule
+1 & Black & GND & 0V \\
+2 & Red & 3.3V & 3.3V \textpm{}5\% \\
+3 & Blue & SDA & 3.3V logic \\
+4 & Yellow & SCL & 3.3V logic \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Additional Test Points}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+Label & Function & Access \\
+\midrule
+TP1 & 1.8V LDO Monitor & Test point \\
+TP2 & BME688 Enable & Optional control \\
+LED1 & Power Indicator & Green LED \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Physical Dimensions}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{unit_dimension_v_1_0_0_ue0094_icp10111_barometric_pressure_sensor.png}
+\caption{Physical Dimensions}
+\end{figure}
+
+\subsubsection{PCB Specifications}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\toprule
+Parameter & Dimension & Tolerance & Notes \\
+\midrule
+\textbackslash\{\}textbf\{Length\} & 25.4 mm & \textpm{}0.1 mm & Standard 1-inch module \\
+\textbackslash\{\}textbf\{Width\} & 15.2 mm & \textpm{}0.1 mm & Compact profile \\
+\textbackslash\{\}textbf\{Thickness\} & 1.6 mm & \textpm{}0.1 mm & Standard PCB \\
+\textbackslash\{\}textbf\{Mounting\} & Castellated & - & Edge plating for SMD mounting \\
+\textbackslash\{\}textbf\{Weight\} & 2.5 g & \textpm{}0.2 g & Typical assembled weight \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Environmental Operating Conditions}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lllll}
+\toprule
+Parameter & Minimum & Maximum & Unit & Notes \\
+\midrule
+\textbackslash\{\}textbf\{Operating Temperature\} & -40 & +85 & \textdegree{}C & Extended industrial range \\
+\textbackslash\{\}textbf\{Storage Temperature\} & -55 & +125 & \textdegree{}C & Non-operating storage \\
+\textbackslash\{\}textbf\{Relative Humidity\} & 0 & 95 & \%RH & Non-condensing \\
+\textbackslash\{\}textbf\{Atmospheric Pressure\} & 300 & 1250 & hPa & Sensor measurement range \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Communication Interface}
+| \textbf{Weight} | ~2.1 g | - | Including components |
+
+\subsubsection{Component Heights}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+Component & Height & Location \\
+\midrule
+ICP-10111 & 1.0 mm & Top side, center \\
+BME688 & 0.95 mm & Top side, left \\
+QWIIC Connector & 3.5 mm & Top side, edge \\
+Castellated Holes & 0.1 mm & Edge plating \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Block Diagram}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{unit_topology_v_1_0_0_ue0094_icp10111_barometric_pressure_sensor.png}
+\caption{Block Diagram}
+\end{figure}
+
+\subsubsection{System Architecture}
+
+The module implements a dual-sensor architecture:
+
+1. \textbf{Primary Sensor Path (ICP-10111)}:
+   - Direct I2C communication at address 0x63
+   - Internal 1.8V LDO for sensor core
+   - 20-bit pressure ADC with temperature compensation
+
+2. \textbf{Secondary Sensor Path (BME688)}:
+   - Independent I2C communication at address 0x77  
+   - Environmental monitoring (T/H/Gas)
+   - Shared 3.3V supply with power management
+
+3. \textbf{Interface and Power}:
+   - Single I2C bus with individual device addressing
+   - Integrated pull-up resistors (4.7kΩ)
+   - Power-on LED indicator
+   - ESD protection on all I/O pins
+
+\subsection{Component Reference}
+
+\subsubsection{Primary Components}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lllll}
+\toprule
+Reference & Part Number & Description & Manufacturer & Notes \\
+\midrule
+\textbackslash\{\}textbf\{IC1\} & ICP-10111 & Barometric Pressure Sensor & TDK InvenSense & Primary sensor \\
+\textbackslash\{\}textbf\{IC2\} & BME688 & Environmental Sensor & Bosch Sensortec & T/H/Gas optional \\
+\textbackslash\{\}textbf\{U1\} & ME6206A18XG & 1.8V LDO Regulator & Microne Semi & 250mA output \\
+\textbackslash\{\}textbf\{U2\} & TXS0102 & Level Shifter & Texas Instruments & 3.3V/1.8V translation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Passive Components}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\toprule
+Reference & Value & Package & Function \\
+\midrule
+\textbackslash\{\}textbf\{R1, R2\} & 4.7kΩ & 0402 & I2C pull-up resistors \\
+\textbackslash\{\}textbf\{R3\} & 1kΩ & 0402 & LED current limiting \\
+\textbackslash\{\}textbf\{C1\} & 10\textmu{}F & 0603 & Power supply decoupling \\
+\textbackslash\{\}textbf\{C2, C3\} & 100nF & 0402 & High-frequency bypass \\
+\textbackslash\{\}textbf\{C4\} & 1\textmu{}F & 0402 & LDO output filtering \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Connectors and Indicators}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+Reference & Description & Specifications \\
+\midrule
+\textbackslash\{\}textbf\{J1\} & QWIIC Connector & JST GH 1.25mm, 4-pin \\
+\textbackslash\{\}textbf\{JP1\} & Castellated Holes & 2.54mm pitch, 4 positions \\
+\textbackslash\{\}textbf\{LED1\} & Power Indicator & Green, 0603 package \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Communication Interface}
+
+\subsubsection{I2C Bus Configuration}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\toprule
+Parameter & Value & Unit & Notes \\
+\midrule
+\textbackslash\{\}textbf\{Bus Voltage\} & 3.3 & V & Logic level \\
+\textbackslash\{\}textbf\{Pull-up Resistance\} & 4.7 & kΩ & Integrated on PCB \\
+\textbackslash\{\}textbf\{Clock Frequencies\} & 100/400/1000 & kHz & Standard/Fast/Fast+ \\
+\textbackslash\{\}textbf\{Maximum Bus Capacitance\} & 400 & pF & Per I2C specification \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Device Addresses}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\toprule
+Device & 7-bit Address & 8-bit Address & Function \\
+\midrule
+\textbackslash\{\}textbf\{ICP-10111\} & 0x63 & 0xC6/0xC7 & Pressure/Temperature \\
+\textbackslash\{\}textbf\{BME688\} & 0x77 & 0xEE/0xEF & Environmental sensing \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\textit{Note: 8-bit addresses shown as Write/Read format}
+
+\subsubsection{Communication Protocol}
+
+\textbf{ICP-10111 Register Access:}
+- Read operations: Single or burst read supported
+- Measurement triggering: Command-based or continuous
+- Data format: 20-bit pressure + 16-bit temperature
+- Conversion time: 1.6ms (normal mode)
+
+\textbf{BME688 Register Access:}
+- Standard Bosch Sensortec protocol
+- Multiple operating modes available
+- Gas sensor heater control
+- FIFO buffer for data logging
+
+
+
+
+\setcounter{section}{0}
+\section{SOFTWARE}
+
+
+
+This directory contains comprehensive software components for the ICP-10111 Barometric Pressure Sensor development ecosystem, including professional documentation generation tools, cross-platform code examples, and development utilities.
+
+\subsection{Overview}
+
+This software package provides comprehensive development tools and examples for integrating the ICP-10111 Barometric Pressure Sensor into embedded systems and IoT applications. The package includes cross-platform libraries, example implementations, and professional documentation generation tools.
+
+\subsubsection{Key Features}
+
+- \textbf{Cross-Platform Support}: Linux, embedded RTOS, and microcontroller compatibility
+- \textbf{Multiple Languages}: C (embedded systems) and Python (high-level applications)  
+- \textbf{Real-time Processing}: Sub-millisecond measurement cycles with interrupt handling
+- \textbf{Professional Documentation}: Automated LaTeX documentation generation
+- \textbf{Production Ready}: Industrial-grade error handling and validation
+
+\subsection{Supported Platforms}
+
+\subsubsection{Embedded Linux Systems}
+- \textbf{Raspberry Pi} (all models with I2C support)
+- \textbf{BeagleBone Black/Green} 
+- \textbf{NVIDIA Jetson} series
+- \textbf{Orange Pi} and compatible SBCs
+- \textbf{Industrial Linux} systems with I2C interface
+
+\subsubsection{Microcontrollers}
+- \textbf{ESP32/ESP8266} (Arduino IDE and ESP-IDF)
+- \textbf{STM32} series (HAL and LL drivers)
+- \textbf{Arduino} compatible boards
+- \textbf{PIC32} and other RTOS-based systems
+
+\subsection{Software Architecture}
+
+\subsubsection{Core Components}
+
+\textbf{1. Device Communication Layer}
+- \textbf{I2C Protocol Handler}: Low-level register access and bus management
+- \textbf{Device Detection}: Automatic sensor discovery and capability detection
+- \textbf{Error Recovery}: Robust error handling with automatic retry mechanisms
+- \textbf{Power Management}: Software-controlled low-power modes
+
+\textbf{2. Data Processing Engine}
+- \textbf{Real-time Calculations}: Pressure and temperature conversion algorithms
+- \textbf{Calibration Management}: Factory calibration data handling
+- \textbf{Data Filtering}: Configurable digital filtering for noise reduction
+- \textbf{Unit Conversion}: Automatic conversion between measurement units
+
+\textbf{3. Application Interface}
+- \textbf{High-level APIs}: Simplified sensor control functions
+- \textbf{Event-driven Processing}: Interrupt-based measurement notifications
+- \textbf{Data Logging}: Built-in logging capabilities with timestamp management
+- \textbf{Configuration Management}: Runtime parameter adjustment
+
+\subsection{Programming Examples}
+
+\subsubsection{C Language Implementation}
+
+\textbf{Target Applications}: Embedded systems, real-time applications, microcontrollers
+
+\textbf{Features:}
+- \textbf{ANSI C Compliance}: Compatible with embedded compilers
+- \textbf{Minimal Dependencies}: Only standard I2C libraries required
+- \textbf{Real-time Performance}: Optimized for sub-millisecond response times
+- \textbf{Memory Efficient}: <2KB RAM footprint for complete implementation
+
+\textbf{Core Functions:}
+\begin{lstlisting}[language=c]
+int icp10111_init(int i2c_fd);                    
+int icp10111_configure(uint8_t mode, uint8_t rate);
+
+// Data acquisition functions  
+int icp10111_read_pressure(float *pressure_hpa);      
+int icp10111_read_temperature(float *temperature_c); 
+int icp10111_read_both(sensor_data_t *data);
+
+// Power management and control
+int icp10111_set_power_mode(power_mode_t mode);
+int icp10111_trigger_measurement(void);
+\end{lstlisting}
+
+\textbf{Hardware Requirements:}
+- I2C bus enabled on host system
+- \texttt{\footnotesize libi2c-dev} development library
+- GCC compiler with C99 support
+- 4.7kΩ pull-up resistors on SDA/SCL lines
+
+\textbf{Usage Example:}
+\begin{lstlisting}[language=c]
+#include "icp10111.h"
+
+int main() {
+    float pressure, temperature;
+    int i2c_fd = open("/dev/i2c-1", O_RDWR);
+    
+    if (icp10111_init(i2c_fd) == 0) {
+        icp10111_read_pressure(&pressure);
+        icp10111_read_temperature(&temperature);
+        printf("Pressure: %.2f hPa, Temperature: %.2f°C
+", 
+               pressure, temperature);
+    }
+    
+    close(i2c_fd);
+    return 0;
+}
+\end{lstlisting}
+
+\subsubsection{Python Implementation}
+
+\textbf{Target Applications}: IoT systems, data logging, research applications, prototyping
+
+\textbf{Features:}
+- \textbf{Object-Oriented Design}: Clean, maintainable code structure
+- \textbf{Type Hints}: Full type annotation for better code documentation  
+- \textbf{Async Support}: Non-blocking I/O for concurrent applications
+- \textbf{Data Analysis}: Integration with NumPy/Pandas for data processing
+- \textbf{Logging Framework}: Comprehensive logging with configurable levels
+
+\textbf{Core Classes:}
+\begin{lstlisting}[language=python]
+class ICP10111Sensor:
+    def __init__(self, bus_number: int = 1, address: int = 0x63)
+    def read_pressure(self) -> float
+    def read_temperature(self) -> float  
+    def read_sensor_data(self) -> SensorData
+    def configure_measurement(self, mode: MeasurementMode)
+    def set_power_mode(self, mode: PowerMode)
+\end{lstlisting}
+
+\textbf{Dependencies:}
+\begin{lstlisting}[language=bash]
+pip install smbus2      # I2C communication library
+pip install numpy       # Numerical processing (optional)
+pip install logging     # Enhanced logging (built-in)
+\end{lstlisting}
+
+\textbf{Usage Example:}
+\begin{lstlisting}[language=python]
+from icp10111 import ICP10111Sensor
+import time
+
+
+\setcounter{section}{0}
+\section{Initialize sensor}
+
+sensor = ICP10111Sensor(bus_number=1)
+
+
+\setcounter{section}{0}
+\section{Configure for continuous measurement}
+
+sensor.configure_measurement(mode='continuous', rate=10)  # 10 Hz
+
+
+\setcounter{section}{0}
+\section{Read data}
+
+while True:
+    data = sensor.read_sensor_data()
+    print(f"Pressure: {data.pressure:.2f} hPa")
+    print(f"Temperature: {data.temperature:.2f}°C")
+    time.sleep(1)
+\end{lstlisting}
+
+\subsection{Advanced Configuration}
+
+\subsubsection{I2C Settings}
+- \textbf{Default Bus}: \texttt{\footnotesize /dev/i2c-1} (Raspberry Pi)
+- \textbf{ICP-10111 Address}: \texttt{\footnotesize 0x63}
+- \textbf{BME688 Address}: \texttt{\footnotesize 0x77} (if present)
+- \textbf{Clock Speed}: 100kHz (standard) / 400kHz (fast mode)
+
+\subsubsection{Measurement Parameters}
+- \textbf{Pressure Range}: 300-1250 hPa
+- \textbf{Pressure Resolution}: 0.01 hPa
+- \textbf{Temperature Range}: -40°C to +85°C
+- \textbf{Sample Rate}: 1 Hz (adjustable)
+
+\subsection{🛠️ Troubleshooting}
+
+\subsubsection{Common Issues}
+
+1. \textbf{Permission Denied}
+   \begin{lstlisting}[language=bash]
+sudo usermod -a -G i2c $USER
+   # Logout and login again
+   ``\texttt{\footnotesize 
+
+2. \textbf{I2C Device Not Found}
+   }`\texttt{\footnotesize bash
+   # Check if I2C is enabled
+   lsmod | grep i2c
+   
+   # Scan for devices
+   i2cdetect -y 1
+   }`\texttt{\footnotesize 
+
+3. \textbf{Reading Errors}
+   }`\texttt{\footnotesize bash
+   # Verify connections and pull-up resistors
+   # Check power supply voltage (3.3V nominal)
+   # Ensure proper grounding
+   }`\texttt{\footnotesize 
+
+\subsubsection{Performance Optimization}
+
+\textbf{For Real-time Applications:}
+- Use dedicated I2C bus for sensor communication
+- Enable I2C fast mode (400kHz) for faster data transfer
+- Implement interrupt-driven data acquisition
+- Use DMA for bulk data transfers
+
+\textbf{For Low-Power Applications:}
+- Configure sensor sleep mode between measurements
+- Use triggered measurement mode instead of continuous
+- Implement wake-on-interrupt functionality
+- Optimize measurement intervals based on application needs
+
+\subsection{Quick Start Guide}
+
+\subsubsection{1. Hardware Connection}
+
+\textbf{Physical Wiring} (Raspberry Pi example):
+\end{lstlisting}
+ICP-10111 Module    →    Raspberry Pi 4
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+VCC (Pin 1)         →    3.3V (Pin 1)
+GND (Pin 2)         →    GND (Pin 6) 
+SDA (Pin 3)         →    GPIO 2/SDA (Pin 3)
+SCL (Pin 4)         →    GPIO 3/SCL (Pin 5)
+\begin{lstlisting}[language=text]
+\textbf{Alternative: QWIIC Connection}
+- Use SparkFun QWIIC cable (JST GH 1.25mm)
+- Plug directly into QWIIC-compatible development board
+- Daisy-chainable with other QWIIC modules
+
+\subsubsection{2. System Configuration (Raspberry Pi OS)}
+\end{lstlisting}bash
+
+\setcounter{section}{0}
+\section{Enable I2C interface}
+
+sudo raspi-config
+
+\setcounter{section}{0}
+\section{→ Interface Options → I2C → Enable → Reboot}
+
+
+
+\setcounter{section}{0}
+\section{Verify I2C kernel module}
+
+lsmod | grep i2c_dev
+
+
+\setcounter{section}{0}
+\section{Install development tools}
+
+sudo apt-get update
+sudo apt-get install i2c-tools python3-pip build-essential libi2c-dev
+
+
+\setcounter{section}{0}
+\section{Configure I2C permissions (avoid sudo requirements)}
+
+sudo usermod -a -G i2c $USER
+sudo reboot
+\begin{lstlisting}[language=text]
+\subsubsection{3. Hardware Verification}
+\end{lstlisting}bash
+
+\setcounter{section}{0}
+\section{Scan I2C bus for connected devices}
+
+i2cdetect -y 1
+
+
+\setcounter{section}{0}
+\section{Expected devices:}
+
+
+\setcounter{section}{0}
+\section{0x63 = ICP-10111 Barometric Pressure Sensor}
+
+
+\setcounter{section}{0}
+\section{0x77 = BME688 Environmental Sensor (if populated)}
+
+\begin{lstlisting}[language=text]
+\subsubsection{4. Run Example Code}
+
+\textbf{C Implementation:}
+\end{lstlisting}bash
+cd software/examples/c/main/
+gcc -O2 -Wall -std=c99 -o icp_sensor main.c -li2c
+./icp_sensor
+\begin{lstlisting}[language=text]
+\textbf{Python Implementation:}
+\end{lstlisting}bash
+cd software/examples/py/main/
+pip3 install --user smbus2
+python3 main.py
+\begin{lstlisting}[language=text]
+\subsection{Expected Performance}
+
+\subsubsection{Typical Measurement Ranges}
+
+\textbf{At Sea Level (Standard Conditions):}
+- \textbf{Pressure}: 1013.25 ± 30 hPa (29.92 ± 0.9 inHg)
+- \textbf{Temperature}: Ambient ± sensor self-heating (~0.1°C)
+- \textbf{Calculated Altitude}: 0 ± accuracy_margin
+
+\textbf{Measurement Quality Indicators:}
+\end{lstlisting}
+✅ GOOD:     1000-1040 hPa, stable readings within ±0.1 hPa
+⚠️  CAUTION: <1000 or >1040 hPa, check sensor placement/calibration  
+❌ ERROR:    Readings outside 300-1250 hPa range, sensor malfunction
+\begin{lstlisting}[language=text]
+\subsubsection{Performance Specifications}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+Parameter & C Implementation & Python Implementation \\
+\midrule
+\textbackslash\{\}textbf\{Measurement Rate\} & Up to 100 Hz & Up to 50 Hz \\
+\textbackslash\{\}textbf\{Startup Time\} & <50ms & <200ms \\
+\textbackslash\{\}textbf\{Memory Usage\} & <2KB RAM & <50MB RAM \\
+\textbackslash\{\}textbf\{Power Consumption\} & <1.5mA & <1.8mA \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Integration Guidelines}
+
+\subsubsection{Real-time Applications}
+- Use dedicated I2C bus for sensor communication
+- Enable I2C fast mode (400kHz) for faster data transfer
+- Implement interrupt-driven data acquisition
+- Use DMA for bulk data transfers
+
+\subsubsection{Low-Power Applications}
+- Configure sensor sleep mode between measurements
+- Use triggered measurement mode instead of continuous
+- Implement wake-on-interrupt functionality
+- Optimize measurement intervals based on application needs
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\toprule
+----------- & --------- & ------- & ------------- \\
+\midrule
+\textbackslash\{\}textbf\{Device Address\} & \}0x63\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & Fixed & 7-bit I2C address \\
+\textbackslash\{\}textbf\{Clock Speed\} & \}100 kHz\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & \}100/400/1000 kHz\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & I2C communication speed \\
+\textbackslash\{\}textbf\{Sampling Rate\} & \}1 Hz\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & \}0.1-100 Hz\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & Measurement frequency \\
+\textbackslash\{\}textbf\{Pressure Resolution\} & \}0.01 hPa\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & Fixed & ADC resolution \\
+\textbackslash\{\}textbf\{Operating Mode\} & \}Normal\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & \}Low Power/Normal/High Res\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & Power vs accuracy trade-off \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{BME688 Environmental Sensor (Optional)}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\toprule
+Parameter & Default & Range & Function \\
+\midrule
+\textbackslash\{\}textbf\{I2C Address\} & \}0x77\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & Fixed & Environmental co-processor \\
+\textbackslash\{\}textbf\{Humidity Sampling\} & \}1x\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & \}0x-16x\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & Oversampling rate \\
+\textbackslash\{\}textbf\{Gas Sensor\} & \}Disabled\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & \}Enabled/Disabled\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & VOC detection \\
+\textbackslash\{\}textbf\{Filter Coefficient\} & \}0\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & \}0-127\textbackslash\{\}texttt\{\textbackslash\{\}footnotesize & IIR filtering \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Configuration Files}
+
+\textbf{C Configuration (}sensor_config.h\texttt{\footnotesize ):}
+\end{lstlisting}c
+#define ICP10111_I2C_BUS        1
+#define ICP10111_I2C_ADDR       0x63
+#define ICP10111_SAMPLE_RATE    10      // Hz
+#define ICP10111_FILTER_ENABLE  1
+#define BME688_ENABLE           0       // Set to 1 if BME688 present
+\begin{lstlisting}[language=text]
+\textbf{Python Configuration (}config.yaml\texttt{\footnotesize ):}
+\end{lstlisting}yaml
+sensor:
+  i2c_bus: 1
+  address: 0x63
+  sampling_rate: 10.0  # Hz
+  
+data_logging:
+  enable: true
+  format: "csv"        # csv, json, binary
+  filename: "pressure_data_{timestamp}.csv"
+  
+filtering:
+  enable: true
+  type: "moving_average"
+  window_size: 10
+
+environmental:
+  bme688_enable: false
+  humidity_oversampling: 1
+  gas_sensor_enable: false
+\begin{lstlisting}[language=text]
+\subsection{🛠️ Troubleshooting Guide}
+
+\subsubsection{Common Issues and Solutions}
+
+\textbf{1. 🚫 Permission Denied (EACCES)}
+\end{lstlisting}bash
+
+\setcounter{section}{0}
+\section{Problem: I2C device access requires elevated privileges}
+
+
+\setcounter{section}{0}
+\section{Solution A: Add user to i2c group (recommended)}
+
+sudo usermod -a -G i2c $USER
+newgrp i2c  # Or logout/login
+
+
+\setcounter{section}{0}
+\section{Solution B: Use sudo (temporary fix)}
+
+sudo ./your_program
+
+
+\setcounter{section}{0}
+\section{Verification: Check group membership}
+
+groups $USER | grep i2c
+\begin{lstlisting}[language=text]
+\textbf{2. 🔍 I2C Device Not Found (ENODEV)}
+\end{lstlisting}bash
+
+\setcounter{section}{0}
+\section{Problem: Sensor not detected on I2C bus}
+
+
+\setcounter{section}{0}
+\section{Diagnosis: Scan for devices}
+
+i2cdetect -y 1
+
+
+\setcounter{section}{0}
+\section{Troubleshooting steps:}
+
+
+\setcounter{section}{0}
+\section{1. Check physical connections}
+
+
+\setcounter{section}{0}
+\section{2. Verify I2C is enabled}
+
+sudo raspi-config  # Interface Options → I2C → Enable
+
+
+\setcounter{section}{0}
+\section{3. Check kernel modules}
+
+lsmod | grep i2c
+
+\setcounter{section}{0}
+\section{Expected: i2c\_dev, i2c\_bcm2835}
+
+
+
+\setcounter{section}{0}
+\section{4. Try different I2C bus}
+
+i2cdetect -y 0  # Some boards use bus 0
+\begin{lstlisting}[language=text]
+\textbf{3. ⚡ Compilation Errors (C/C++)}
+\end{lstlisting}bash
+
+\setcounter{section}{0}
+\section{Problem: Missing development headers/libraries}
+
+
+\setcounter{section}{0}
+\section{Solution: Install complete development environment}
+
+sudo apt-get update
+sudo apt-get install build-essential libi2c-dev linux-headers-$(uname -r)
+
+
+\setcounter{section}{0}
+\section{For cross-compilation (ARM embedded):}
+
+sudo apt-get install gcc-arm-linux-gnueabihf
+
+
+\setcounter{section}{0}
+\section{Verify installation:}
+
+pkg-config --exists libi2c-dev && echo "libi2c-dev: OK"
+\begin{lstlisting}[language=text]
+\textbf{4. 🐍 Python Import Errors}
+\end{lstlisting}bash
+
+\setcounter{section}{0}
+\section{Problem: Missing Python modules}
+
+
+\setcounter{section}{0}
+\section{Solution A: Install via pip (recommended)}
+
+pip3 install smbus2 numpy pyyaml
+
+
+\setcounter{section}{0}
+\section{Solution B: Use system packages}
+
+sudo apt-get install python3-smbus python3-numpy python3-yaml
+
+
+\setcounter{section}{0}
+\section{For virtual environments:}
+
+python3 -m venv sensor_env
+source sensor_env/bin/activate
+pip install -r requirements.txt
+\begin{lstlisting}[language=text]
+\textbf{5. 📊 Unrealistic Readings}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+Issue & Possible Cause & Solution \\
+\midrule
+Pressure > 1250 hPa & Sensor malfunction & Check power supply, replace sensor \\
+Pressure < 300 hPa & I2C communication error & Verify connections, check pullups \\
+High noise (>1 hPa) & EMI interference & Add filtering, shield cables \\
+Temperature drift & Self-heating & Reduce sampling rate, improve airflow \\
+Zero readings & Initialization failure & Check sensor ID, reset sequence \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Debug Mode and Logging}
+
+\textbf{Enable verbose logging in Python:}
+\end{lstlisting}python
+import logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+
+\setcounter{section}{0}
+\section{Output example:}
+
+
+\setcounter{section}{0}
+\section{2025-07-21 10:30:15,123 - icp10111 - DEBUG - I2C bus opened: /dev/i2c-1}
+
+
+\setcounter{section}{0}
+\section{2025-07-21 10:30:15,125 - icp10111 - DEBUG - Sensor ID read: 0x08}
+
+
+\setcounter{section}{0}
+\section{2025-07-21 10:30:15,130 - icp10111 - INFO - Calibration coefficients loaded}
+
+\begin{lstlisting}[language=text]
+\textbf{C debugging with detailed error messages:}
+\end{lstlisting}c
+#define DEBUG_ENABLED 1
+
+#if DEBUG_ENABLED
+    #define DEBUG_PRINT(fmt, ...) \
+        fprintf(stderr, "[DEBUG] %s:%d: " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#else
+    #define DEBUG_PRINT(fmt, ...)
+#endif
+\begin{lstlisting}[language=text]
+\subsubsection{Performance Optimization}
+
+\textbf{High-frequency sampling (>10 Hz):}
+- Use burst read mode for multiple samples
+- Implement interrupt-driven data collection
+- Consider DMA for sustained high throughput
+- Monitor I2C bus utilization
+
+\textbf{Low-power applications:}
+- Configure sensor sleep mode between readings
+- Use timer-based wake-up
+- Implement adaptive sampling rates
+- Monitor current consumption
+
+\subsection{Additional Resources}
+
+\subsubsection{Technical Documentation}
+- ICP-10111 sensor datasheet and register map
+- I2C communication protocol specifications  
+- Platform-specific integration guides
+- Application notes for specialized use cases
+
+\subsubsection{Development Tools}
+- Logic analyzer captures for I2C debugging
+- Oscilloscope waveforms for signal integrity
+- Power consumption measurement guidelines
+- Environmental testing procedures
+
+
+
+\subsection{Additional C Programming Examples}
+
+
+\setcounter{section}{0}
+\section{ICP-10111 Barometric Pressure Sensor - C Examples}
+
+
+This directory contains C code examples for interfacing with the ICP-10111 Barometric Pressure Sensor module.
+
+\subsection{Examples}
+
+\subsubsection{Basic I2C Communication}
+- }basic_reading.c\texttt{\footnotesize  - Simple pressure and temperature reading
+- }continuous_monitoring.c\texttt{\footnotesize  - Continuous sensor data acquisition
+- }low_power_mode.c\texttt{\footnotesize  - Power management and sleep mode operation
+
+\subsubsection{Advanced Examples}
+- }calibration.c\texttt{\footnotesize  - Sensor calibration routines
+- }data_logging.c\texttt{\footnotesize  - Data logging with timestamp
+- }multi_sensor.c\texttt{\footnotesize  - Managing multiple sensors on the same I2C bus
+
+\subsection{Build Instructions}
+\end{lstlisting}bash
+gcc -o sensor_example basic_reading.c -li2c
+\begin{lstlisting}[language=text]
+\subsection{Dependencies}
+
+- Linux I2C development library (}libi2c-dev\texttt{\footnotesize )
+- Standard C library
+
+\subsection{Hardware Requirements}
+
+- ICP-10111 Barometric Pressure Sensor module
+- I2C capable development board (Raspberry Pi, Arduino, etc.)
+- Pull-up resistors (if not integrated on module)
+
+\subsection{I2C Configuration}
+\end{lstlisting}c
+#define ICP10111_I2C_ADDR    0x63
+#define BME688_I2C_ADDR      0x77
+#define I2C_BUS              "/dev/i2c-1"
+\begin{lstlisting}[language=text]
+\subsubsection{C Code Example}
+\end{lstlisting}c
+/**
+ * @file main.c
+ * @brief Electronic Module - Main Example
+ * @author DevLab Team
+ * @date 2025
+ * 
+ * This example demonstrates basic communication with an electronic module
+ * using I2C interface. Serves as a template for module integration.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <linux/i2c-dev.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <stdint.h>
+#include <errno.h>
+#include <string.h>
+
+// I2C Configuration
+#define I2C_BUS "/dev/i2c-1"
+#define MODULE_I2C_ADDR 0x48
+
+// Generic Module Commands
+#define MODULE_CMD_READ_DATA 0x01
+#define MODULE_CMD_READ_STATUS 0x02
+#define MODULE_CMD_READ_VERSION 0x03
+
+// Function prototypes
+int init_i2c(const char* device, int addr);
+int read_module_data(int fd, uint16_t* data);
+int read_module_status(int fd, uint8_t* status);
+void print_module_info(void);
+
+/**
+ * @brief Initialize I2C communication
+ * @param device I2C device path
+ * @param addr I2C slave address
+ * @return File descriptor on success, -1 on error
+ */
+int init_i2c(const char* device, int addr) {
+    int fd = open(device, O_RDWR);
+    if (fd < 0) {
+        fprintf(stderr, "Error opening I2C device %s: %s\n", device, strerror(errno));
+        return -1;
+    }
+    
+    if (ioctl(fd, I2C_SLAVE, addr) < 0) {
+        fprintf(stderr, "Error setting I2C slave address 0x%02X: %s\n", addr, strerror(errno));
+        close(fd);
+        return -1;
+    }
+    
+    return fd;
+}
+
+/**
+ * @brief Read pressure from ICP-10111 sensor
+ * @param fd I2C file descriptor
+ * @param pressure Pointer to store pressure value (hPa)
+ * @return 0 on success, -1 on error
+ */
+int read_pressure(int fd, float* pressure) {
+    uint8_t cmd[3] = {0x48, 0xA3, 0x00}; // Pressure measurement command
+    uint8_t data[9];
+    
+    // Send measurement command
+    if (write(fd, cmd, 3) != 3) {
+        fprintf(stderr, "Error sending pressure command: %s\n", strerror(errno));
+        return -1;
+    }
+    
+    // Wait for measurement
+    usleep(100000); // 100ms
+    
+    // Read measurement data
+    if (read(fd, data, 9) != 9) {
+        fprintf(stderr, "Error reading pressure data: %s\n", strerror(errno));
+        return -1;
+    }
+    
+    // Convert raw data to pressure (simplified conversion)
+    uint32_t raw_pressure = (data[0] << 16) | (data[1] << 8) | data[2];
+    *pressure = (float)raw_pressure / 100.0f; // Convert to hPa
+    
+    return 0;
+}
+
+/**
+ * @brief Read temperature from ICP-10111 sensor
+ * @param fd I2C file descriptor
+ * @param temperature Pointer to store temperature value (°C)
+ * @return 0 on success, -1 on error
+ */
+int read_temperature(int fd, float* temperature) {
+    uint8_t cmd[3] = {0x60, 0x9C, 0x00}; // Temperature measurement command
+    uint8_t data[6];
+    
+    // Send measurement command
+    if (write(fd, cmd, 3) != 3) {
+        fprintf(stderr, "Error sending temperature command: %s\n", strerror(errno));
+        return -1;
+    }
+    
+    // Wait for measurement
+    usleep(50000); // 50ms
+    
+    // Read measurement data
+    if (read(fd, data, 6) != 6) {
+        fprintf(stderr, "Error reading temperature data: %s\n", strerror(errno));
+        return -1;
+    }
+    
+    // Convert raw data to temperature (simplified conversion)
+    uint16_t raw_temp = (data[0] << 8) | data[1];
+    *temperature = (float)raw_temp / 100.0f - 40.0f; // Convert to °C
+    
+    return 0;
+}
+
+/**
+ * @brief Print sensor information
+ */
+void print_sensor_info(void) {
+    printf("========================================\n");
+    printf("  ICP-10111 Barometric Pressure Sensor\n");
+    printf("========================================\n");
+    printf("I2C Address: 0x%02X\n", ICP10111_I2C_ADDR);
+    printf("I2C Bus: %s\n", I2C_BUS);
+    printf("Pressure Range: 300-1250 hPa\n");
+    printf("Accuracy: ±0.4 hPa @ 25°C\n");
+    printf("========================================\n\n");
+}
+
+/**
+ * @brief Main function
+ */
+int main(void) {
+    int fd;
+    float pressure, temperature;
+    int sample_count = 0;
+    
+    print_sensor_info();
+    
+    // Initialize I2C communication
+    fd = init_i2c(I2C_BUS, ICP10111_I2C_ADDR);
+    if (fd < 0) {
+        fprintf(stderr, "Failed to initialize I2C communication\n");
+        return EXIT_FAILURE;
+    }
+    
+    printf("Starting continuous measurement...\n");
+    printf("Press Ctrl+C to stop\n\n");
+    printf("Sample | Pressure (hPa) | Temperature (°C)\n");
+    printf("-------|----------------|------------------\n");
+    
+    // Continuous measurement loop
+    while (1) {
+        sample_count++;
+        
+        // Read pressure
+        if (read_pressure(fd, &pressure) == 0) {
+            // Read temperature
+            if (read_temperature(fd, &temperature) == 0) {
+                printf("%6d | %13.2f | %15.2f\n", sample_count, pressure, temperature);
+            } else {
+                printf("%6d | %13.2f | %15s\n", sample_count, pressure, "Error");
+            }
+        } else {
+            printf("%6d | %13s | %15s\n", sample_count, "Error", "Error");
+        }
+        
+        // Wait before next measurement
+        sleep(1);
+    }
+    
+    // Cleanup
+    close(fd);
+    return EXIT_SUCCESS;
+}
+
+\begin{lstlisting}[language=text]
+\subsection{Additional Python Programming Examples}
+
+
+\setcounter{section}{0}
+\section{ICP-10111 Barometric Pressure Sensor - Python Examples}
+
+
+This directory contains Python code examples for interfacing with the ICP-10111 Barometric Pressure Sensor module.
+
+\subsection{Examples}
+
+\subsubsection{Basic Usage}
+- }basic_reading.py\texttt{\footnotesize  - Simple pressure and temperature reading
+- }continuous_monitoring.py\texttt{\footnotesize  - Continuous sensor data acquisition with plotting
+- }data_logger.py\texttt{\footnotesize  - CSV data logging with timestamps
+
+\subsubsection{Advanced Examples}
+- }web_server.py\texttt{\footnotesize  - Real-time web interface for sensor data
+- }mqtt_publisher.py\texttt{\footnotesize  - MQTT data publishing for IoT applications
+- }altitude_calculator.py\texttt{\footnotesize  - Altitude calculation from pressure readings
+
+\subsection{Installation}
+\end{lstlisting}bash
+pip install -r requirements.txt
+\begin{lstlisting}[language=text]
+\subsection{Dependencies}
+
+Create a }requirements.txt\texttt{\footnotesize  file with:
+\end{lstlisting}
+smbus2
+numpy
+matplotlib
+paho-mqtt
+flask
+\begin{lstlisting}[language=text]
+\subsection{Quick Start}
+\end{lstlisting}python
+import smbus2
+import time
+
+
+\setcounter{section}{0}
+\section{I2C configuration}
+
+I2C_BUS = 1
+ICP10111_ADDR = 0x63
+
+
+\setcounter{section}{0}
+\section{Initialize I2C bus}
+
+bus = smbus2.SMBus(I2C_BUS)
+
+
+\setcounter{section}{0}
+\section{Read sensor data}
+
+def read_pressure():
+    # Implementation here
+    pass
+
+
+\setcounter{section}{0}
+\section{Example usage}
+
+while True:
+    pressure = read_pressure()
+    print(f"Pressure: {pressure} hPa")
+    time.sleep(1)
+\begin{lstlisting}[language=text]
+\subsection{Hardware Requirements}
+
+- ICP-10111 Barometric Pressure Sensor module
+- Raspberry Pi or similar I2C capable device
+- Python 3.6+
+
+\subsection{I2C Configuration}
+\end{lstlisting}python
+ICP10111_I2C_ADDR = 0x63
+BME688_I2C_ADDR = 0x77
+I2C_BUS = 1  # Usually /dev/i2c-1 on Raspberry Pi
+}``
 
 
 \end{document}

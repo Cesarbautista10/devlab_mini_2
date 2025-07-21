@@ -1,0 +1,37 @@
+# Configuración de Metadatos del Proyecto
+# Este archivo define los metadatos que se usarán para generar documentación
+
+project_metadata:
+  # Información básica del producto
+  title: "Electronic Module"
+  subtitle: "Technical Datasheet and Development Guide"
+  product_name: "Electronic Module"
+  product_sku: "UEXXXX"
+  version: "1.0.0"
+  
+  # Información de la organización (heredada de document_standards.yaml)
+  # Se sobrescribirá automáticamente si document_standards.yaml existe
+  author: "UNIT Electronics"
+  division: "Hardware Development & Prototyping"
+  contact: "info@unitelectronics.com"
+  website: "www.uelectronics.com"
+  
+  # Información de copyright y fechas (se actualiza automáticamente)
+  copyright: "© 2025 UNIT Electronics. All rights reserved."
+  date: "July 2025"  # Se actualiza automáticamente al mes actual
+  
+  # Configuración de documentos
+  logo: "logo.png"
+  project_phase: "Prototype Development"
+  hardware_status: "Functional prototype completed"
+  
+  # Metadatos específicos por idioma
+  languages:
+    en:
+      language_code: "en"
+      language_name: "English"
+      title_suffix: ""
+    es:
+      language_code: "es" 
+      language_name: "Español"
+      title_suffix: " (Español)"

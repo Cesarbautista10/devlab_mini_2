@@ -1,0 +1,40 @@
+extraction_paths:
+  content_sources:
+    english: /media/mr/firmware/personal/devlab_mini_2/info/content_en.md
+    hardware: /media/mr/firmware/personal/devlab_mini_2/hardware/README.md
+    software_c: /media/mr/firmware/personal/devlab_mini_2/software/examples/c/README.md
+    software_python: /media/mr/firmware/personal/devlab_mini_2/software/examples/python/README.md
+    spanish: /media/mr/firmware/personal/devlab_mini_2/info/content_es.md
+  metadata_sources:
+    project: /media/mr/firmware/personal/devlab_mini_2/info/metadata/project_metadata.yaml
+    standards: /media/mr/firmware/personal/devlab_mini_2/info/metadata/document_standards.yaml
+  output_targets:
+    docs_dir: /media/mr/firmware/personal/devlab_mini_2/docs
+    latex_file: /media/mr/firmware/personal/devlab_mini_2/docs/datasheet_en.tex
+    pdf_file: /media/mr/firmware/personal/devlab_mini_2/docs/datasheet_en.pdf
+  template_sources:
+    latex: /media/mr/firmware/personal/devlab_mini_2/info/templates/template.tex
+paths:
+  content_en: /media/mr/firmware/personal/devlab_mini_2/info/content_en.md
+  content_es: /media/mr/firmware/personal/devlab_mini_2/info/content_es.md
+  docs: /media/mr/firmware/personal/devlab_mini_2/docs
+  hardware: /media/mr/firmware/personal/devlab_mini_2/hardware
+  hardware_images: /media/mr/firmware/personal/devlab_mini_2/hardware/resources/img
+  hardware_resources: /media/mr/firmware/personal/devlab_mini_2/hardware/resources
+  info: /media/mr/firmware/personal/devlab_mini_2/info
+  info_metadata: /media/mr/firmware/personal/devlab_mini_2/info/metadata
+  info_scripts: /media/mr/firmware/personal/devlab_mini_2/info/scripts
+  info_templates: /media/mr/firmware/personal/devlab_mini_2/info/templates
+  metadata_project: /media/mr/firmware/personal/devlab_mini_2/info/metadata/project_metadata.yaml
+  metadata_standards: /media/mr/firmware/personal/devlab_mini_2/info/metadata/document_standards.yaml
+  output_docs: /media/mr/firmware/personal/devlab_mini_2/docs
+  output_latex: /media/mr/firmware/personal/devlab_mini_2/docs/datasheet_en.tex
+  output_pdf: /media/mr/firmware/personal/devlab_mini_2/docs/datasheet_en.pdf
+  root: /media/mr/firmware/personal/devlab_mini_2
+  software: /media/mr/firmware/personal/devlab_mini_2/software
+  software_c: /media/mr/firmware/personal/devlab_mini_2/software/examples/c
+  software_examples: /media/mr/firmware/personal/devlab_mini_2/software/examples
+  software_python: /media/mr/firmware/personal/devlab_mini_2/software/examples/python
+  template_latex: /media/mr/firmware/personal/devlab_mini_2/info/templates/template.tex
+project_name: Electronic Module Template
+version: 1.0.0

@@ -1,0 +1,247 @@
+\documentclass[11pt,a4paper]{article}
+
+% Configuración de página y márgenes
+\usepackage[margin=1in, top=1.2in, bottom=1.2in]{geometry}
+
+% Configuración para manejar líneas largas y overflow
+\sloppy
+\emergencystretch=1em
+
+% Paquetes para caracteres especiales y codificación
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{gensymb}
+
+% Soporte para idiomas (español e inglés)
+\usepackage[spanish,english]{babel}
+
+% Paquetes para imágenes y gráficos
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Paquetes para tablas
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{tabularx}
+
+% Paquetes para listas mejoradas
+\usepackage{enumitem}
+
+% Control de saltos de página
+\usepackage{needspace}
+\usepackage{afterpage}
+\usepackage{placeins}
+
+% Enlaces e hipervínculos
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue]{hyperref}
+
+% Paquetes para código y verbatim
+\usepackage{fancyvrb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Paquetes para diseño profesional
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\tcbuselibrary{most}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+% Configuración de encabezados y pies de página
+\pagestyle{fancy}
+\fancyhf{} % Limpiar encabezados y pies
+
+% Pie de página
+\fancyfoot[L]{\small $if(author)$$author$$else$UNIT Electronics$endif$ - Development}
+\fancyfoot[C]{\small $if(date)$$date$$else$\today$endif$}
+\fancyfoot[R]{\small Page \thepage\ of \pageref{LastPage}}
+
+% Línea en encabezado y pie
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Estilo para primera página de cada sección
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyfoot[L]{\small $if(author)$$author$$else$UNIT Electronics$endif$ - Development}
+    \fancyfoot[C]{\small $if(date)$$date$$else$\today$endif$}
+    \fancyfoot[R]{\small Page \thepage\ of \pageref{LastPage}}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0.4pt}
+}
+
+% Configuración de listings para código
+\lstset{
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    tabsize=2,
+    breakatwhitespace=true,
+    columns=flexible
+}
+
+% Configuración adicional para verbatim con líneas largas
+\usepackage{alltt}
+\renewcommand{\ttdefault}{pcr}
+
+% Paquetes para mejor tipografía
+\usepackage{microtype}
+\usepackage{setspace}
+
+% Configuración de espaciado
+\onehalfspacing
+
+% Configuración de listas anidadas
+\setlist[itemize]{nosep, leftmargin=*, before=\vspace{0.5\baselineskip}, after=\vspace{0.5\baselineskip}}
+\setlist[itemize,1]{label=\textbullet}
+\setlist[itemize,2]{label=\textendash}
+\setlist[itemize,3]{label=\textasteriskcentered}
+\setlist[enumerate]{nosep, leftmargin=*, before=\vspace{0.5\baselineskip}, after=\vspace{0.5\baselineskip}}
+
+% Comandos personalizados
+\providecommand{\tightlist}{}
+
+% Comando para evitar viudas y huérfanas
+\widowpenalty=10000
+\clubpenalty=10000
+
+% Configuración de profundidad de numeración - sin numeración automática para secciones principales
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{3}
+
+\begin{document}
+
+$if(title)$
+% Página de título estandarizada IEEE/ISO
+\begin{titlepage}
+    \centering
+    
+    % Header corporativo estandarizado
+    \vspace*{0.5cm}
+    
+    % Logo y información corporativa
+    \begin{minipage}{0.3\textwidth}
+        \centering
+        $if(logo)$
+        \includegraphics[width=\textwidth]{$logo$}
+        $else$
+        \includegraphics[width=\textwidth]{logo.png}
+        $endif$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.6\textwidth}
+        \raggedleft
+        {\small \textbf{$if(author)$$author$$else$UNIT Electronics$endif$}}\\
+        {\footnotesize Technical Documentation}\\
+        {\footnotesize Development Project - Prototype Phase}
+    \end{minipage}
+    
+    \vspace{2cm}
+    
+    % Título principal
+    {\huge \textbf{$title$}}\\[0.5cm]
+    
+    % Subtítulo
+    $if(subtitle)$
+    {\Large $subtitle$}\\[1cm]
+    $endif$
+    
+    % Información del producto
+    $if(product_name)$
+    {\large \textbf{Product:} $product_name$}\\[0.3cm]
+    $endif$
+    
+    $if(product_sku)$
+    {\large \textbf{SKU:} $product_sku$}\\[0.3cm]
+    $endif$
+    
+    $if(version)$
+    {\large \textbf{Version:} $version$}\\[1cm]
+    $endif$
+    
+    \vfill
+    
+    % Información de fechas y estado
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \textbf{Project Phase}\\
+        $if(project_phase)$$project_phase$$else$Development$endif$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \textbf{Hardware Status}\\
+        $if(hardware_status)$$hardware_status$$else$In Development$endif$
+    \end{minipage}
+    
+    \vspace{1cm}
+    
+    % Pie de página con fecha y copyright
+    {\large $if(date)$$date$$else$\today$endif$}\\[0.5cm]
+    {\footnotesize $if(copyright)$$copyright$$else$© 2025 UNIT Electronics. All rights reserved.$endif$}
+    
+\end{titlepage}
+
+% Página de información técnica
+\newpage
+\thispagestyle{plain}
+
+\section*{Document Information}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Field} & \textbf{Value} \\
+\midrule
+Document Title & $if(title)$$title$$else$Electronic Module Documentation$endif$ \\
+Product Name & $if(product_name)$$product_name$$else$Electronic Module$endif$ \\
+SKU & $if(product_sku)$$product_sku$$else$UEXXXX$endif$ \\
+Version & $if(version)$$version$$else$1.0.0$endif$ \\
+Date & $if(date)$$date$$else$\today$endif$ \\
+Author & $if(author)$$author$$else$UNIT Electronics$endif$ \\
+Project Phase & $if(project_phase)$$project_phase$$else$Development$endif$ \\
+Hardware Status & $if(hardware_status)$$hardware_status$$else$In Development$endif$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\vspace{1cm}
+
+\section*{Revision History}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llll}
+\toprule
+\textbf{Version} & \textbf{Date} & \textbf{Author} & \textbf{Changes} \\
+\midrule
+1.0.0 & $if(date)$$date$$else$\today$endif$ & $if(author)$$author$$else$UNIT Electronics$endif$ & Initial documentation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+$endif$
+
+% Tabla de contenidos
+\tableofcontents
+\newpage
+
+% El contenido se insertará aquí automáticamente
+
+\end{document}
