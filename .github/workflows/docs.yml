@@ -1,0 +1,438 @@
+name: 📚 Generate Documentation
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'en/**'
+      - 'es/**'
+      - 'images/**'
+      - 'template.tex'
+      - 'generate_final.py'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'en/**'
+      - 'es/**'
+      - 'images/**'
+      - 'template.tex'
+      - 'generate_final.py'
+  workflow_dispatch: # Permite ejecutar manualmente
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  generate-docs:
+    name: 🔧 Generate PDF Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+    
+    - name: 📦 Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: 🎨 Install LaTeX and Tools
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y \
+          texlive-full \
+          texlive-fonts-recommended \
+          texlive-latex-extra \
+          texlive-fonts-extra \
+          ghostscript \
+          librsvg2-bin \
+          inkscape
+    
+    - name: 🧹 Clean Previous Build
+      run: |
+        echo "🧹 Cleaning previous build artifacts..."
+        rm -rf docs/*.pdf docs/*.tex docs/*.log docs/*.aux docs/*.out docs/*.toc docs/*.lof docs/*.lot
+        rm -rf docs/*_*.png docs/*_*.jpg docs/*_*.jpeg
+        echo "✅ Build directory cleaned"
+    
+    - name: � Prepare Images and Resources
+      run: |
+        echo "📁 Preparing images and resources..."
+        mkdir -p docs/resources
+        
+        # Copy logo files first
+        if [ -f "images/logo.png" ]; then
+          cp images/logo.png docs/
+          echo "✅ Logo copied to docs/"
+        elif [ -f "images/logo.jpg" ]; then
+          cp images/logo.jpg docs/
+          echo "✅ Logo (JPG) copied to docs/"
+        elif [ -f "images/logo.jpeg" ]; then
+          cp images/logo.jpeg docs/
+          echo "✅ Logo (JPEG) copied to docs/"
+        fi
+        
+        # Copy all images from images/resources/ to docs/resources/
+        if [ -d "images/resources" ]; then
+          cp -r images/resources/* docs/resources/ 2>/dev/null || echo "No images to copy"
+          echo "✅ Images copied to docs/resources/"
+          ls -la docs/resources/ || echo "No files in docs/resources/"
+        else
+          echo "⚠️ No images/resources directory found"
+        fi
+        
+        # Also copy individual images if they exist
+        if [ -d "images" ]; then
+          cp images/*.png docs/ 2>/dev/null || echo "No PNG files to copy"
+          cp images/*.jpg docs/ 2>/dev/null || echo "No JPG files to copy"
+          cp images/*.jpeg docs/ 2>/dev/null || echo "No JPEG files to copy"
+        fi
+        
+        echo "📊 Available images after copy:"
+        find docs/ -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" || echo "No image files found"
+    
+    - name: �🔍 Verify Dependencies
+      run: |
+        python --version
+        pdflatex --version
+        python -c "import yaml; print('PyYAML OK')"
+        echo "📊 Original images directory:"
+        ls -la images/resources/ || echo "No images/resources directory"
+        echo "📊 Copied images in docs:"
+        ls -la docs/resources/ || echo "No docs/resources directory"
+    
+    - name: 📖 Generate Documentation - English
+      run: |
+        echo "🇺🇸 Generating English documentation..."
+        python generate_final.py --lang en
+        echo "✅ English documentation generated"
+      continue-on-error: false
+    
+    - name: 📖 Generate Documentation - Spanish
+      run: |
+        echo "🇪🇸 Generating Spanish documentation..."
+        python generate_final.py --lang es
+        echo "✅ Spanish documentation generated"
+      continue-on-error: false
+    
+    - name: 📊 Check Generated Files
+      run: |
+        echo "📄 Generated files:"
+        ls -lh docs/
+        echo ""
+        echo "📊 PDF file sizes:"
+        ls -lh docs/*.pdf || echo "No PDFs found"
+        echo ""
+        echo "🖼️ Copied images:"
+        ls -lh docs/*.png docs/*.jpg || echo "No images found"
+    
+    - name: 📋 Validate PDFs
+      run: |
+        for pdf in docs/datasheet_*.pdf; do
+          if [ -f "$pdf" ]; then
+            size=$(stat -c%s "$pdf")
+            if [ $size -gt 10000 ]; then
+              echo "✅ $pdf is valid (${size} bytes)"
+              file "$pdf"
+            else
+              echo "❌ $pdf is too small (${size} bytes)"
+              exit 1
+            fi
+          else
+            echo "❌ $pdf not found"
+            exit 1
+          fi
+        done
+    
+    - name: 🗂️ Organize Artifacts
+      run: |
+        mkdir -p artifacts/pdfs
+        mkdir -p artifacts/latex
+        mkdir -p artifacts/images
+        
+        # Copiar PDFs
+        cp docs/*.pdf artifacts/pdfs/ 2>/dev/null || echo "No PDFs to copy"
+        
+        # Copiar archivos LaTeX
+        cp docs/*.tex artifacts/latex/ 2>/dev/null || echo "No LaTeX files to copy"
+        
+        # Copiar imágenes procesadas
+        cp docs/*.png docs/*.jpg artifacts/images/ 2>/dev/null || echo "No images to copy"
+        
+        # Crear resumen
+        echo "# 📚 Documentation Build Summary" > artifacts/build-summary.md
+        echo "" >> artifacts/build-summary.md
+        echo "**Build Date:** $(date)" >> artifacts/build-summary.md
+        echo "**Commit:** ${{ github.sha }}" >> artifacts/build-summary.md
+        echo "**Branch:** ${{ github.ref_name }}" >> artifacts/build-summary.md
+        echo "" >> artifacts/build-summary.md
+        echo "## Generated Files" >> artifacts/build-summary.md
+        echo "" >> artifacts/build-summary.md
+        ls -lh artifacts/pdfs/ >> artifacts/build-summary.md
+    
+    - name: 📤 Upload PDF Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: documentation-pdfs-${{ github.run_number }}
+        path: artifacts/pdfs/
+        retention-days: 30
+    
+    - name: 📤 Upload LaTeX Source
+      uses: actions/upload-artifact@v4
+      with:
+        name: latex-source-${{ github.run_number }}
+        path: artifacts/latex/
+        retention-days: 7
+    
+    - name: 📤 Upload Build Summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-summary-${{ github.run_number }}
+        path: artifacts/build-summary.md
+        retention-days: 7
+
+  deploy-docs:
+    name: 🚀 Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: generate-docs
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: 📥 Download PDF Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: documentation-pdfs-${{ github.run_number }}
+        path: docs/
+    
+    - name: 🌐 Create GitHub Pages Site
+      run: |
+        mkdir -p _site
+        
+        # Crear página HTML principal
+        cat > _site/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>DevLab Documentation</title>
+            <style>
+                body { 
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                    max-width: 800px; 
+                    margin: 0 auto; 
+                    padding: 20px;
+                    background-color: #f5f5f5;
+                }
+                .container {
+                    background: white;
+                    padding: 40px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                }
+                h1 { 
+                    color: #2c3e50; 
+                    text-align: center;
+                    margin-bottom: 30px;
+                }
+                .docs-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                    gap: 20px;
+                    margin: 30px 0;
+                }
+                .doc-card {
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    padding: 20px;
+                    text-align: center;
+                    background: #fafafa;
+                    transition: transform 0.2s;
+                }
+                .doc-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+                }
+                .download-btn {
+                    display: inline-block;
+                    background: #3498db;
+                    color: white;
+                    padding: 12px 24px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin: 10px;
+                    transition: background 0.2s;
+                }
+                .download-btn:hover {
+                    background: #2980b9;
+                }
+                .flag {
+                    font-size: 2em;
+                    margin-bottom: 10px;
+                }
+                .build-info {
+                    background: #ecf0f1;
+                    padding: 15px;
+                    border-radius: 5px;
+                    margin-top: 30px;
+                    font-size: 0.9em;
+                    color: #7f8c8d;
+                }
+                .status-badge {
+                    display: inline-block;
+                    background: #27ae60;
+                    color: white;
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    font-size: 0.8em;
+                    margin-left: 10px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>📚 DevLab Documentation</h1>
+                <p style="text-align: center; color: #7f8c8d; font-size: 1.1em;">
+                    Automatically generated technical documentation
+                </p>
+                
+                <div class="docs-grid">
+                    <div class="doc-card">
+                        <div class="flag">🇺🇸</div>
+                        <h3>English Documentation</h3>
+                        <p>Complete technical specifications and user guide in English</p>
+                        <a href="datasheet_en.pdf" class="download-btn" target="_blank">
+                            📄 Download PDF
+                        </a>
+                    </div>
+                    
+                    <div class="doc-card">
+                        <div class="flag">🇪🇸</div>
+                        <h3>Documentación en Español</h3>
+                        <p>Especificaciones técnicas completas y guía de usuario en español</p>
+                        <a href="datasheet_es.pdf" class="download-btn" target="_blank">
+                            📄 Descargar PDF
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="build-info">
+                    <strong>Build Information:</strong><br>
+                    Generated: TIMESTAMP<br>
+                    Commit: COMMIT_HASH<br>
+                    Status: <span class="status-badge">✅ Success</span>
+                </div>
+            </div>
+        </body>
+        </html>
+        EOF
+        
+        # Reemplazar placeholders
+        sed -i "s/TIMESTAMP/$(date)/" _site/index.html
+        sed -i "s/COMMIT_HASH/${{ github.sha }}/" _site/index.html
+        
+        # Copiar PDFs
+        cp docs/*.pdf _site/ 2>/dev/null || echo "No PDFs to copy"
+        
+        # Listar archivos generados
+        echo "🌐 GitHub Pages content:"
+        ls -la _site/
+    
+    - name: 📄 Setup Pages
+      uses: actions/configure-pages@v4
+    
+    - name: 📤 Upload to Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: _site/
+    
+    - name: 🚀 Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+  release:
+    name: 🏷️ Create Release
+    runs-on: ubuntu-latest
+    needs: generate-docs
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: 📥 Download PDF Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: documentation-pdfs-${{ github.run_number }}
+        path: release/
+    
+    - name: 🏷️ Generate Release Tag
+      id: tag
+      run: |
+        DATE=$(date +'%Y.%m.%d')
+        TAG="docs-v${DATE}-${{ github.run_number }}"
+        echo "tag=${TAG}" >> $GITHUB_OUTPUT
+        echo "date=${DATE}" >> $GITHUB_OUTPUT
+    
+    - name: 📝 Generate Release Notes
+      run: |
+        cat > release-notes.md << EOF
+        # 📚 Documentation Release ${{ steps.tag.outputs.tag }}
+        
+        Automatically generated documentation from commit \`${{ github.sha }}\`.
+        
+        ## 📄 Available Documents
+        
+        - **English**: Complete technical specifications and user guide
+        - **Español**: Especificaciones técnicas completas y guía de usuario
+        
+        ## 🔧 Changes in this Release
+        
+        $(git log --oneline --since="24 hours ago" --grep="docs\|documentation\|manual" || echo "- Updated documentation content")
+        
+        ## 📊 Build Information
+        
+        - **Build Date**: $(date)
+        - **Commit**: ${{ github.sha }}
+        - **Workflow Run**: ${{ github.run_number }}
+        
+        ---
+        
+        Generated automatically by GitHub Actions 🤖
+        EOF
+    
+    - name: 🏷️ Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.tag.outputs.tag }}
+        name: "📚 Documentation ${{ steps.tag.outputs.date }}"
+        body_path: release-notes.md
+        files: |
+          release/*.pdf
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

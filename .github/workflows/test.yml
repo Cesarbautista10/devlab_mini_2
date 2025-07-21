@@ -1,0 +1,143 @@
+name: 🧪 Test Documentation Build
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'en/**'
+      - 'es/**'
+      - 'images/**'
+      - 'template.tex'
+      - 'generate_final.py'
+      - '.github/workflows/**'
+
+jobs:
+  test-build:
+    name: 🔧 Test PDF Generation
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        language: [en, es]
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: 📦 Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: 🎨 Install LaTeX (Minimal)
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y \
+          texlive-latex-recommended \
+          texlive-fonts-recommended \
+          texlive-latex-extra \
+          texlive-lang-spanish
+    
+    - name: 🧹 Clean Previous Build
+      run: |
+        echo "🧹 Cleaning previous build artifacts..."
+        rm -rf docs/*.pdf docs/*.tex docs/*.log docs/*.aux docs/*.out docs/*.toc docs/*.lof docs/*.lot
+        rm -rf docs/*_*.png docs/*_*.jpg docs/*_*.jpeg
+        echo "✅ Build directory cleaned"
+    
+    - name: 📖 Test Documentation Generation
+      run: |
+        echo "🧪 Testing ${{ matrix.language }} documentation generation..."
+        python generate_final.py --lang ${{ matrix.language }}
+        
+        # Verificar que se generó el PDF
+        pdf_file="docs/datasheet_${{ matrix.language }}.pdf"
+        if [ -f "$pdf_file" ]; then
+          size=$(stat -c%s "$pdf_file")
+          echo "✅ $pdf_file generated successfully (${size} bytes)"
+          
+          # Verificar que no está vacío
+          if [ $size -gt 5000 ]; then
+            echo "✅ PDF size is acceptable"
+          else
+            echo "❌ PDF size is too small: ${size} bytes"
+            exit 1
+          fi
+        else
+          echo "❌ PDF file not generated: $pdf_file"
+          exit 1
+        fi
+    
+    - name: 📊 Generate Test Report
+      run: |
+        echo "# 🧪 Test Report - ${{ matrix.language }}" > test-report-${{ matrix.language }}.md
+        echo "" >> test-report-${{ matrix.language }}.md
+        echo "**Language:** ${{ matrix.language }}" >> test-report-${{ matrix.language }}.md
+        echo "**Status:** ✅ Success" >> test-report-${{ matrix.language }}.md
+        echo "**Files Generated:**" >> test-report-${{ matrix.language }}.md
+        ls -lh docs/ >> test-report-${{ matrix.language }}.md
+    
+    - name: 📤 Upload Test Artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-${{ matrix.language }}
+        path: |
+          docs/datasheet_${{ matrix.language }}.pdf
+          test-report-${{ matrix.language }}.md
+        retention-days: 3
+
+  validate-pr:
+    name: ✅ Validate Pull Request
+    runs-on: ubuntu-latest
+    needs: test-build
+    if: always()
+    
+    steps:
+    - name: 📥 Download Test Results - English
+      uses: actions/download-artifact@v4
+      with:
+        name: test-results-en
+        path: ./
+      continue-on-error: true
+    
+    - name: 📥 Download Test Results - Spanish
+      uses: actions/download-artifact@v4
+      with:
+        name: test-results-es
+        path: ./
+      continue-on-error: true
+    
+    - name: 📊 Validate All Tests
+      run: |
+        echo "📊 Validation Summary:"
+        echo "===================="
+        
+        success_count=0
+        total_count=2  # en y es
+        
+        for lang in en es; do
+          if [ -f "datasheet_${lang}.pdf" ]; then
+            echo "✅ ${lang}: PDF generated successfully"
+            ((success_count++))
+          else
+            echo "❌ ${lang}: PDF generation failed"
+          fi
+        done
+        
+        echo ""
+        echo "📈 Results: ${success_count}/${total_count} languages successful"
+        
+        if [ $success_count -eq $total_count ]; then
+          echo "🎉 All tests passed! PR is ready for review."
+          exit 0
+        else
+          echo "💥 Some tests failed. Please review the errors."
+          exit 1
+        fi

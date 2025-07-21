@@ -1,0 +1,42 @@
+title: "ICP-10111 Sensor de Presión Barométrica"
+subtitle: "Módulo Sensor Ambiental de Alta Precisión"
+author: "Equipo de Ingeniería DevLab"
+date: "2025-07-21"
+version: "Rev. 1.0"
+organization: "UNIT Electronics"
+partnumber: "ICP-10111-001"
+classification: "Documentación de Desarrollo"
+project_phase: "Desarrollo de Prototipo"
+standards: "Siguiendo guías de diseño IPC-2221"
+toc: true
+lof: true
+lot: true
+logo: "logo.png"
+
+# Información de Licencia de Hardware
+hardware_license:
+  type: "Hardware de Código Abierto"
+  license: "Licencia MIT"
+  description: "Este diseño de hardware se libera bajo la Licencia MIT"
+  copyright: "Copyright (c) 2025 UNIT Electronics"
+  attribution: "Se requiere atribución para trabajos derivados"
+  commercial_use: "Uso comercial permitido"
+  modification: "Modificación permitida"
+  distribution: "Distribución permitida"
+  warranty: "Sin garantía proporcionada"
+
+# Estándares y Guías de Diseño
+design_standards:
+  pcb_design: "IPC-2221 - Estándar Genérico para Diseño de Placas Impresas"
+  assembly: "IPC-A-610 - Aceptabilidad de Ensambles Electrónicos"
+  soldering: "IPC-J-STD-001 - Requisitos para Ensambles Eléctricos y Electrónicos Soldados"
+  components: "IPC-7351 - Requisitos Genéricos para Diseño de Montaje Superficial"
+  thermal: "IPC-2152 - Estándar para Determinar Capacidad de Corriente en Diseño de PCB"
+  testing: "IPC-TM-650 - Manual de Métodos de Prueba"
+
+# Estado de Cumplimiento y Certificaciones
+compliance_status:
+  rohs: "Diseño preparado para cumplimiento RoHS"
+  reach: "Selección de materiales siguiendo directrices REACH"
+  lead_free: "Compatible con proceso de ensamble libre de plomo"
+  environmental: "Etapa de desarrollo - pruebas en progreso"

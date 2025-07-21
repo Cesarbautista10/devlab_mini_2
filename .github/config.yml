@@ -1,0 +1,59 @@
+# 🤖 CI/CD Configuration
+# This file contains configuration settings for the automated documentation pipeline
+
+# Workflow Settings
+workflow_triggers:
+  branches:
+    - main
+    - develop
+  paths:
+    - 'en/**'
+    - 'es/**'
+    - 'images/**'
+    - 'template.tex'
+    - 'generate_final.py'
+    - '.github/workflows/**'
+
+# Environment Settings
+python_version: '3.11'
+latex_packages:
+  - texlive-latex-recommended
+  - texlive-fonts-recommended
+  - texlive-latex-extra
+  - texlive-lang-spanish
+  - texlive-lang-english
+
+# Artifact Settings
+artifact_retention_days:
+  pdfs: 30
+  latex_source: 7
+  build_summary: 7
+  test_results: 3
+
+# Release Settings
+release_tag_format: "docs-v{date}-{run_number}"
+release_name_format: "📚 Documentation {date}"
+
+# GitHub Pages Settings
+pages_enabled: true
+pages_branch: main
+pages_directory: "_site"
+
+# Quality Checks
+pdf_min_size_bytes: 5000
+required_languages:
+  - en
+  - es
+
+# Notification Settings (optional)
+notifications:
+  slack_webhook: ""  # Add your Slack webhook URL here
+  email_on_failure: false
+  
+# Performance Settings
+parallel_builds: true
+cache_dependencies: true
+
+# Security Settings
+artifact_public: false
+pages_public: true

@@ -1,0 +1,88 @@
+# Configuración de Documentación de Desarrollo
+# Para proyectos en fase de prototipo y desarrollo
+
+document_standards:
+  # Información de la organización
+  company:
+    name: "UNIT Electronics"
+    division: "Hardware Development & Prototyping"
+    project_phase: "Prototype Development"
+    support_email: "info@unitelectronics.com"
+    website: "www.unitelectronics.com"
+  
+  # Clasificaciones de documentos para desarrollo
+  classifications:
+    development: "Development Documentation"
+    internal: "Internal Development Use Only"
+    prototype: "Prototype Specifications"
+  
+  # Objetivos de estándares futuros (no cumplidos aún)
+  target_standards:
+    design_guidelines: "Following IPC-2221 recommendations"
+    environmental_goals: "RoHS compliance preparation"
+    safety_considerations: "Basic safety guidelines applied"
+    emc_preparation: "Layout considerations for future testing"
+    quality_process: "Development best practices"
+  
+  # Estado actual del proyecto
+  project_status:
+    phase: "Prototype Development"
+    hardware_status: "Functional prototype completed"
+    testing_status: "Basic functionality verified"
+    documentation_status: "Preliminary specifications"
+    certification_status: "Not yet initiated"
+  
+  # Plantillas de numeración de partes (sin certificación)
+  part_numbering:
+    prototypes: "PROTO-XXXXX-YYY"
+    development: "DEV-XXXXX-YYY"
+    test_boards: "TEST-XXXXX-YYY"
+  
+  # Configuración de formato
+  formatting:
+    colors:
+      primary: "blue"
+      secondary: "gray"
+      warning: "orange"
+      development: "purple"
+    
+    development_notices:
+      prototype_warning: "This is a prototype - not for production use"
+      spec_warning: "Specifications are preliminary and subject to change"
+      testing_notice: "Basic functionality verified - full validation pending"
+  
+  # Secciones recomendadas para documentación de desarrollo
+  recommended_sections:
+    - "1. SCOPE AND PURPOSE"
+    - "2. DEVELOPMENT STATUS"
+    - "3. TECHNICAL SPECIFICATIONS (PRELIMINARY)"
+    - "4. HARDWARE DESCRIPTION"
+    - "5. INTERFACE DESCRIPTIONS"
+    - "6. TESTING RESULTS"
+    - "7. KNOWN LIMITATIONS"
+    - "8. FUTURE DEVELOPMENT PLANS"
+  
+  # Metadata para proyectos de desarrollo
+  required_metadata:
+    - "title"
+    - "partnumber"
+    - "version"
+    - "date"
+    - "author"
+    - "organization"
+    - "classification"
+    - "project_phase"
+  
+  # Avisos para desarrollo
+  development_notices:
+    status: "This hardware module is currently in the prototype development phase."
+    disclaimer: "All specifications are preliminary and based on initial testing."
+    usage: "This prototype is intended for development, testing, and evaluation purposes only."
+    
+  # Control de versiones para desarrollo
+  version_control:
+    format: "Rev. X.Y"
+    initial_version: "Rev. 1.0"
+    revision_increment: 0.1
+    major_increment: 1.0
+    development_suffix: "-DEV"

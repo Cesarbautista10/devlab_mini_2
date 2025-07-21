@@ -1,0 +1,151 @@
+name: Build and Publish DevLab PDFs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-pdf:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+        
+    - name: Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Install LaTeX and Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          texlive-full \
+          texlive-fonts-recommended \
+          texlive-latex-extra \
+          texlive-fonts-extra \
+          ghostscript \
+          librsvg2-bin \
+          inkscape
+
+    - name: Clean Previous Build
+      run: |
+        echo "🧹 Cleaning previous build artifacts..."
+        rm -rf docs/*.pdf docs/*.tex docs/*.log docs/*.aux docs/*.out docs/*.toc docs/*.lof docs/*.lot
+        rm -rf docs/*_*.png docs/*_*.jpg docs/*_*.jpeg
+        echo "✅ Build directory cleaned"
+
+    - name: Prepare Images and Resources
+      run: |
+        echo "📁 Preparing images and resources..."
+        mkdir -p docs/resources
+        
+        # Copy logo files first
+        if [ -f "images/logo.png" ]; then
+          cp images/logo.png docs/
+          echo "✅ Logo copied to docs/"
+        elif [ -f "images/logo.jpg" ]; then
+          cp images/logo.jpg docs/
+          echo "✅ Logo (JPG) copied to docs/"
+        elif [ -f "images/logo.jpeg" ]; then
+          cp images/logo.jpeg docs/
+          echo "✅ Logo (JPEG) copied to docs/"
+        fi
+        
+        # Copy all images from images/resources/ to docs/resources/
+        if [ -d "images/resources" ]; then
+          cp -r images/resources/* docs/resources/ 2>/dev/null || echo "No images to copy"
+          echo "✅ Images copied to docs/resources/"
+          ls -la docs/resources/ || echo "No files in docs/resources/"
+        else
+          echo "⚠️ No images/resources directory found"
+        fi
+        
+        # Also copy individual images if they exist
+        if [ -d "images" ]; then
+          cp images/*.png docs/ 2>/dev/null || echo "No PNG files to copy"
+          cp images/*.jpg docs/ 2>/dev/null || echo "No JPG files to copy"
+          cp images/*.jpeg docs/ 2>/dev/null || echo "No JPEG files to copy"
+        fi
+        
+        echo "📊 Available images:"
+        find docs/ -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" || echo "No image files found"
+
+    - name: Generate Documentation - English
+      run: |
+        echo "🇺🇸 Generating English documentation..."
+        python generate_final.py --lang en
+        echo "✅ English documentation generated"
+
+    - name: Generate Documentation - Spanish
+      run: |
+        echo "🇪🇸 Generating Spanish documentation..."
+        python generate_final.py --lang es
+        echo "✅ Spanish documentation generated"
+
+    - name: Copy PDFs to root for compatibility
+      run: |
+        cp docs/datasheet_en.pdf devlab_en.pdf 2>/dev/null || echo "English PDF not found"
+        cp docs/datasheet_es.pdf devlab_es.pdf 2>/dev/null || echo "Spanish PDF not found"
+        
+    - name: Validate Generated Files
+      run: |
+        echo "📄 Generated files:"
+        ls -lh *.pdf docs/*.pdf 2>/dev/null || echo "No PDFs found"
+        
+        # Check if PDFs are valid
+        for pdf in devlab_*.pdf; do
+          if [ -f "$pdf" ]; then
+            size=$(stat -c%s "$pdf")
+            if [ $size -gt 10000 ]; then
+              echo "✅ $pdf is valid (${size} bytes)"
+            else
+              echo "❌ $pdf is too small (${size} bytes)"
+              exit 1
+            fi
+          fi
+        done
+
+    - name: Compress PDFs with Ghostscript
+      run: |
+        # Create compressed versions
+        for file in devlab_*.pdf; do
+          if [ -f "$file" ]; then
+            compressed="docs/${file}"
+            gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/printer \
+               -dNOPAUSE -dQUIET -dBATCH \
+               -sOutputFile="$compressed" "$file"
+            echo "✅ Compressed $file to $compressed"
+          fi
+        done
+
+    - name: List generated files
+      run: |
+        echo "📄 Root directory PDFs:"
+        ls -lh *.pdf 2>/dev/null || echo "No PDFs in root"
+        echo ""
+        echo "📁 Docs directory contents:"
+        ls -lh docs/ 2>/dev/null || echo "No docs directory"
+
+    - name: Commit and push PDFs to docs/ (only on main)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git pull origin main
+        git add docs/devlab_*.pdf docs/datasheet_*.pdf 2>/dev/null || echo "No PDFs to add"
+        git commit -m "Publish DevLab PDFs [skip ci]" || echo "No changes to commit"
+        git push origin main
